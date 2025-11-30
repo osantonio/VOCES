@@ -9,6 +9,9 @@ Bienvenido a la documentación técnica del proyecto VOCES.
 - **[Validaciones en SQLModel y Pydantic v2](./validaciones-sqlmodel.md)**  
   Guía completa sobre cómo implementar validaciones en modelos usando `Field()` vs `@field_validator`, con ejemplos prácticos y guía de migración.
 
+- **[Modelos de Datos y Auditoría](./modelos-datos.md)**  
+  Documentación detallada de los modelos `Usuario`, `PerfilDemografico` y el sistema de auditoría `LogActividad` con ejemplos JSON.
+
 ---
 
 ## 🎯 Propósito
