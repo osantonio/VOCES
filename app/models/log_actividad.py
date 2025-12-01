@@ -38,7 +38,7 @@ class LogActividad(SQLModel, table=True):
     )
 
     # Datos adicionales en formato JSON
-    metadata: Optional[dict] = Field(
+    detalles: Optional[dict] = Field(
         default=None,
         sa_column=Column(JSON),
         description="Datos adicionales de la acción en formato JSON",

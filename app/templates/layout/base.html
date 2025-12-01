@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}VOCES{% endblock %}</title>
+    <link href="{{ url_for('static', path='/css/output.css') }}" rel="stylesheet">
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    {% block head %}{% endblock %}
+</head>
+
+<body class="h-full flex flex-col bg-background text-foreground antialiased">
+    <!-- Navbar -->
+    <nav class="bg-background border-b border-border sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="shrink-0 flex items-center">
+                        <a href="/" class="text-2xl font-bold text-primary tracking-tight flex items-center gap-2">
+                            <span class="material-symbols-outlined">article</span>
+                            VOCES
+                        </a>
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="/"
+                            class="border-transparent text-muted-foreground hover:border-border hover:text-foreground inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors">
+                            Inicio
+                        </a>
+                        <a href="#"
+                            class="border-transparent text-muted-foreground hover:border-border hover:text-foreground inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors">
+                            Blog
+                        </a>
+                        <a href="#"
+                            class="border-transparent text-muted-foreground hover:border-border hover:text-foreground inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors">
+                            Reviews
+                        </a>
+                    </div>
+                </div>
+                <div class="hidden sm:ml-6 sm:flex sm:items-center space-x-4">
+                    <a href="/auth/login"
+                        class="text-muted-foreground hover:text-foreground px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                        Iniciar Sesión
+                    </a>
+                    <a href="/auth/registro"
+                        class="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm">
+                        Registrarse
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="grow">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-background border-t border-border mt-auto">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <p class="text-center text-sm text-muted-foreground">
+                &copy; {{ now.year if now else 2025 }} VOCES. Todos los derechos reservados.
+            </p>
+        </div>
+    </footer>
+
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>

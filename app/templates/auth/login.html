@@ -1,0 +1,99 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Iniciar Sesión - VOCES{% endblock %}
+
+{% block content %}
+<div class="w-full min-h-[calc(100vh-4rem)] lg:grid lg:grid-cols-2">
+    <!-- Left Side: Branding (Hidden on mobile) -->
+    <div class="hidden lg:flex relative items-center justify-center bg-zinc-900 p-10 border-r border-border">
+        <div class="relative z-10 flex flex-col items-start text-white">
+            <div class="flex items-center gap-3 text-2xl font-bold">
+                <span class="material-symbols-outlined text-blue-500" style="font-size: 32px;">article</span>
+                <span>Voces de Montería</span>
+            </div>
+            <p class="mt-4 text-lg text-zinc-300">
+                "Las historias que nos unen, la voz que nos representa."
+            </p>
+        </div>
+    </div>
+
+    <!-- Right Side: Login Form -->
+    <div class="flex items-center justify-center bg-background p-8">
+        <div class="w-full max-w-md space-y-8">
+            <!-- Mobile Header -->
+            <div class="lg:hidden text-center pb-8">
+                <div class="flex items-center justify-center gap-3 text-2xl font-bold text-foreground">
+                    <span class="material-symbols-outlined text-primary" style="font-size: 32px;">article</span>
+                    <span>Voces de Montería</span>
+                </div>
+            </div>
+
+            <div class="text-left">
+                <h1 class="text-3xl font-bold tracking-tight text-foreground">Bienvenido de nuevo</h1>
+                <p class="mt-2 text-muted-foreground">
+                    Ingresa tus credenciales para acceder a tu cuenta.
+                </p>
+            </div>
+
+            {% if error %}
+            <div class="bg-destructive/15 text-destructive text-sm p-3 rounded-md border border-destructive/20">
+                {{ error }}
+            </div>
+            {% endif %}
+
+            {% if mensaje %}
+            <div class="bg-green-50 text-green-700 text-sm p-3 rounded-md border border-green-200">
+                {{ mensaje }}
+            </div>
+            {% endif %}
+
+            <form class="mt-8 space-y-6" action="/auth/login" method="POST">
+                <div class="space-y-4">
+                    <div>
+                        <label for="username" class="block text-sm font-medium text-foreground mb-2">
+                            Usuario
+                        </label>
+                        <input id="username" name="username" type="text" required
+                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                            placeholder="tu_usuario">
+                    </div>
+
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <label for="password" class="block text-sm font-medium text-foreground">
+                                Contraseña
+                            </label>
+                            <a href="#" class="text-sm font-medium text-primary hover:underline">
+                                ¿Olvidaste tu contraseña?
+                            </a>
+                        </div>
+                        <div class="relative">
+                            <input id="password" name="password" type="password" required
+                                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pr-10"
+                                placeholder="••••••••">
+                            <button type="button"
+                                class="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-foreground">
+                                <span class="material-symbols-outlined" style="font-size: 20px;">visibility_off</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit"
+                    class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full">
+                    Iniciar Sesión
+                </button>
+            </form>
+
+            <div class="text-center text-sm">
+                <p class="text-muted-foreground">
+                    ¿No tienes una cuenta?
+                    <a href="/auth/registro" class="font-medium text-primary hover:underline">
+                        Regístrate
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

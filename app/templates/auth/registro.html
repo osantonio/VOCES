@@ -1,0 +1,119 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Registrarse - VOCES{% endblock %}
+
+{% block content %}
+<div class="w-full min-h-[calc(100vh-4rem)] lg:grid lg:grid-cols-2">
+    <!-- Left Side: Branding (Hidden on mobile) -->
+    <div class="hidden lg:flex relative items-center justify-center bg-zinc-900 p-10 border-r border-border">
+        <div class="relative z-10 flex flex-col items-start text-white">
+            <div class="flex items-center gap-3 text-2xl font-bold">
+                <span class="material-symbols-outlined text-blue-500" style="font-size: 32px;">article</span>
+                <span>Voces de Montería</span>
+            </div>
+            <p class="mt-4 text-lg text-zinc-300">
+                "Únete a la comunidad. Comparte tu voz."
+            </p>
+        </div>
+    </div>
+
+    <!-- Right Side: Register Form -->
+    <div class="flex items-center justify-center bg-background p-8">
+        <div class="w-full max-w-md space-y-8">
+            <!-- Mobile Header -->
+            <div class="lg:hidden text-center pb-8">
+                <div class="flex items-center justify-center gap-3 text-2xl font-bold text-foreground">
+                    <span class="material-symbols-outlined text-primary" style="font-size: 32px;">article</span>
+                    <span>Voces de Montería</span>
+                </div>
+            </div>
+
+            <div class="text-left">
+                <h1 class="text-3xl font-bold tracking-tight text-foreground">Crea tu cuenta</h1>
+                <p class="mt-2 text-muted-foreground">
+                    Completa tus datos para comenzar.
+                </p>
+            </div>
+
+            {% if error %}
+            <div class="bg-destructive/15 text-destructive text-sm p-3 rounded-md border border-destructive/20">
+                {{ error }}
+            </div>
+            {% endif %}
+
+            <form class="mt-8 space-y-6" action="/auth/registro" method="POST">
+                <div class="grid grid-cols-1 gap-y-4 gap-x-4 sm:grid-cols-2">
+                    <div>
+                        <label for="nombres" class="block text-sm font-medium text-foreground mb-2">
+                            Nombres
+                        </label>
+                        <input id="nombres" name="nombres" type="text" required
+                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                            placeholder="Juan">
+                    </div>
+                    <div>
+                        <label for="apellidos" class="block text-sm font-medium text-foreground mb-2">
+                            Apellidos
+                        </label>
+                        <input id="apellidos" name="apellidos" type="text" required
+                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                            placeholder="Pérez">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="username" class="block text-sm font-medium text-foreground mb-2">
+                        Usuario
+                    </label>
+                    <input id="username" name="username" type="text" required
+                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        placeholder="juanperez">
+                    <p class="mt-1 text-xs text-muted-foreground">Solo letras, números y guiones.</p>
+                </div>
+
+                <div>
+                    <label for="email" class="block text-sm font-medium text-foreground mb-2">
+                        Correo Electrónico
+                    </label>
+                    <input id="email" name="email" type="email" autocomplete="email" required
+                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        placeholder="juan@ejemplo.com">
+                </div>
+
+                <div>
+                    <label for="password" class="block text-sm font-medium text-foreground mb-2">
+                        Contraseña
+                    </label>
+                    <input id="password" name="password" type="password" autocomplete="new-password" required
+                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        placeholder="••••••••">
+                    <p class="mt-1 text-xs text-muted-foreground">Mínimo 8 caracteres.</p>
+                </div>
+
+                <div class="flex items-center space-x-2">
+                    <input id="terms" name="terms" type="checkbox" required
+                        class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary">
+                    <label for="terms"
+                        class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-foreground">
+                        Acepto los <a href="#" class="text-primary hover:underline">Términos y Condiciones</a>
+                    </label>
+                </div>
+
+                <button type="submit"
+                    class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full">
+                    Crear Cuenta
+                </button>
+            </form>
+
+            <div class="text-center text-sm">
+                <p class="text-muted-foreground">
+                    ¿Ya tienes una cuenta?
+                    <a href="/auth/login" class="font-medium text-primary hover:underline">
+                        Inicia sesión
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

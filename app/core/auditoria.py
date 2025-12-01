@@ -14,7 +14,7 @@ def registrar_actividad(
     tipo_accion: TipoAccion,
     descripcion: str,
     usuario_id: Optional[str] = None,
-    metadata: Optional[dict] = None,
+    detalles: Optional[dict] = None,
     ip_address: Optional[str] = None,
     user_agent: Optional[str] = None,
     exitoso: bool = True,
@@ -28,7 +28,7 @@ def registrar_actividad(
         tipo_accion: Tipo de acción (enum TipoAccion)
         descripcion: Descripción legible de la acción
         usuario_id: ID del usuario (opcional para acciones anónimas)
-        metadata: Datos adicionales en formato dict
+        detalles: Datos adicionales en formato dict
         ip_address: IP desde donde se realizó la acción
         user_agent: User agent del navegador
         exitoso: Si la acción fue exitosa
@@ -44,14 +44,14 @@ def registrar_actividad(
         ...     descripcion="Usuario inició sesión exitosamente",
         ...     usuario_id="ABC123",
         ...     ip_address="192.168.1.1",
-        ...     metadata={"navegador": "Chrome"}
+        ...     detalles={"navegador": "Chrome"}
         ... )
     """
     log = LogActividad(
         usuario_id=usuario_id,
         tipo_accion=tipo_accion,
         descripcion=descripcion,
-        metadata=metadata,
+        detalles=detalles,
         ip_address=ip_address,
         user_agent=user_agent,
         exitoso=exitoso,

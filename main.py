@@ -4,9 +4,10 @@ Punto de entrada principal de la aplicación VOCES.
 
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from app.core.database import init_db
+from app.routes import auth
 
 
 @asynccontextmanager
@@ -29,14 +30,11 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# Configuración de CORS
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # En producción, especificar dominios exactos
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# Montar archivos estáticos
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
+
+# Registrar rutas
+app.include_router(auth.router)
 
 
 @app.get("/")

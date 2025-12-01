@@ -3,8 +3,28 @@
 /* Configura variante dark mode basada en atributo data-theme */
 @variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
+/* Fuentes Locales */
+@font-face {
+    font-family: "Geist";
+    src: url("/static/fonts/Geist-Variable.woff2") format("woff2");
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Geist Mono";
+    src: url("/static/fonts/GeistMono-Variable.woff2") format("woff2");
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+}
+
 /* Tema claro (por defecto) - shadcn/ui palette */
 @theme {
+    --font-sans: "Geist", sans-serif;
+    --font-mono: "Geist Mono", monospace;
+
     --color-background: #ffffff;
     --color-foreground: #0a0a0a;
     --color-card: #ffffff;
@@ -23,10 +43,6 @@
     --color-destructive-foreground: #fafafa;
     --color-border: #e5e5e5;
     --color-input: #e5e5e5;
-    --color-ring: #0a0a0a;
-    --color-card-foreground: #0a0a0a;
-    --color-muted: #f5f5f5;
-    --color-destructive-foreground: #fafafa;
     --color-ring: #0a0a0a;
     --radius: 0.5rem;
 
@@ -66,4 +82,18 @@
     --chart-3: #f59e0b;
     --chart-4: #9333ea;
     --chart-5: #ec4899;
+}
+
+/* Estilos Globales */
+body {
+    font-family: var(--font-sans);
+}
+
+/* Material Symbols Utility */
+.material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    font-size: 24px;
+    /* Asegurar que el icono herede el color o se ajuste */
+    display: inline-block;
+    vertical-align: middle;
 }

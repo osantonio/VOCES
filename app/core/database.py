@@ -36,7 +36,7 @@ if DATABASE_URL.startswith("postgresql://"):
 # entrar en conflicto con el pool de PgBouncer.
 engine = create_async_engine(
     DATABASE_URL,
-    echo=True,  # Log de consultas SQL (desactivar en producción)
+    echo=False,  # Log de consultas SQL (desactivar en producción)
     poolclass=NullPool,
     future=True,  # future se en
 )

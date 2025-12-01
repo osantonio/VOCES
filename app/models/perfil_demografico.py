@@ -44,7 +44,7 @@ class PerfilDemografico(SQLModel, table=True):
     telefono: Optional[str] = Field(
         default=None,
         max_length=20,
-        pattern=r"^\+?[0-9\s\-\(\)]+$",
+        schema_extra={"pattern": r"^\+?[0-9\s\-\(\)]+$"},
         description="Número de teléfono de contacto",
     )
 

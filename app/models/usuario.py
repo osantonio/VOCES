@@ -47,7 +47,7 @@ class Usuario(TimestampMixin, RedesSocialesMixin, EstadisticasMixin, table=True)
         index=True,
         min_length=3,
         max_length=50,
-        pattern=r"^[a-zA-Z0-9_-]+$",
+        schema_extra={"pattern": r"^[a-zA-Z0-9_-]+$"},
         nullable=False,
     )
 

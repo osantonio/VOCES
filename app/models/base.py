@@ -41,7 +41,7 @@ class RedesSocialesMixin(SQLModel):
     twitter_handle: Optional[str] = Field(
         default=None,
         max_length=50,
-        pattern=r"^@?[a-zA-Z0-9_]{1,15}$",
+        schema_extra={"pattern": r"^@?[a-zA-Z0-9_]{1,15}$"},
     )
 
 
