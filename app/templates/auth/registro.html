@@ -5,13 +5,13 @@
 {% block content %}
 <div class="w-full min-h-[calc(100vh-4rem)] lg:grid lg:grid-cols-2">
     <!-- Left Side: Branding (Hidden on mobile) -->
-    <div class="hidden lg:flex relative items-center justify-center bg-zinc-900 p-10 border-r border-border">
-        <div class="relative z-10 flex flex-col items-start text-white">
+    <div class="hidden lg:flex relative items-center justify-center bg-secondary p-10 border-r border-border">
+        <div class="relative z-10 flex flex-col items-start text-secondary-foreground">
             <div class="flex items-center gap-3 text-2xl font-bold">
-                <span class="material-symbols-outlined text-blue-500" style="font-size: 32px;">article</span>
+                <span class="material-symbols-outlined text-primary" style="font-size: 32px;">article</span>
                 <span>Voces de Montería</span>
             </div>
-            <p class="mt-4 text-lg text-zinc-300">
+            <p class="mt-4 text-lg text-muted-foreground">
                 "Únete a la comunidad. Comparte tu voz."
             </p>
         </div>
@@ -92,7 +92,7 @@
 
                 <div class="flex items-center space-x-2">
                     <input id="terms" name="terms" type="checkbox" required
-                        class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary">
+                        class="h-4 w-4 rounded border-input text-primary focus:ring-ring">
                     <label for="terms"
                         class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-foreground">
                         Acepto los <a href="#" class="text-primary hover:underline">Términos y Condiciones</a>
