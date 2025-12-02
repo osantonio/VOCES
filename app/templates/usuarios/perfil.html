@@ -4,8 +4,9 @@
 
 {% block content %}
 <div class="min-h-screen bg-background">
-    <div class="px-4 sm:px-10 lg:px-20 flex flex-1 justify-center py-5 sm:py-10">
-        <div class="flex flex-col w-full max-w-[960px] flex-1">
+      
+    <div class="max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-5 sm:py-10">
+        <div class="flex flex-col w-full">
             <!-- Botón Volver -->
             <div class="mb-6">
                 <a href="/usuarios"
@@ -18,79 +19,96 @@
             <!-- Card Principal del Perfil -->
             <div class="flex flex-col gap-8 rounded-xl bg-card border border-border shadow-sm p-4 sm:p-6 md:p-8">
 
-                <!-- Header: Avatar, Nombre y Botones -->
-                <!-- Nombre, Username, Badges y Bio -->
-                <div class="flex flex-col justify-center gap-2">
-                    <div class="flex flex-col sm:flex-row items-center gap-3">
-                        <h1 class="text-foreground text-2xl sm:text-3xl font-bold leading-tight tracking-tight">
-                            {{ usuario.nombres }} {{ usuario.apellidos }}
-                        </h1>
-                        <!-- Badges de Rol y Estado -->
-                        <div class="flex gap-2 flex-wrap justify-center sm:justify-start">
-                            <!-- Rol Badge -->
-                            {% if usuario.rol.value == 'Admin' %}
-                            <span
-                                class="text-xs font-semibold inline-block py-1 px-2.5 uppercase rounded-full text-purple-600 bg-purple-200 dark:text-purple-300 dark:bg-purple-900/50">
-                                Admin
-                            </span>
-                            {% elif usuario.rol.value == 'Moderador' %}
-                            <span
-                                class="text-xs font-semibold inline-block py-1 px-2.5 uppercase rounded-full text-blue-600 bg-blue-200 dark:text-blue-300 dark:bg-blue-900/50">
-                                Moderador
-                            </span>
-                            {% elif usuario.rol.value == 'Editor' %}
-                            <span
-                                class="text-xs font-semibold inline-block py-1 px-2.5 uppercase rounded-full text-green-600 bg-green-200 dark:text-green-300 dark:bg-green-900/50">
-                                Editor
-                            </span>
+                <div class="grid grid-cols-1 sm:grid-cols-[150px_1fr] gap-6 items-start">
+                    <div class="relative flex items-center justify-center">
+                        <div class="group relative w-[150px] h-[150px] rounded-full overflow-hidden border border-border shadow-sm">
+                            {% if usuario.avatar_url %}
+                            <img src="{{ usuario.avatar_url }}" alt="Avatar de {{ usuario.username }}"
+                                class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105">
                             {% else %}
-                            <span
-                                class="text-xs font-semibold inline-block py-1 px-2.5 uppercase rounded-full text-gray-600 bg-gray-200 dark:text-gray-300 dark:bg-gray-800">
-                                Usuario
-                            </span>
+                            <div class="w-full h-full bg-accent flex items-center justify-center">
+                                <span class="text-xl font-bold text-accent-foreground">{{ user_initials(usuario) }}</span>
+                            </div>
                             {% endif %}
+                            <a href="/usuarios/{{ usuario.username }}/editar#avatar"
+                                class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity text-primary-foreground text-sm font-medium"
+                                aria-label="Actualizar foto">
+                                <span class="material-symbols-outlined mr-1">upload</span>
+                                Actualizar
+                            </a>
+                        </div>
+                        {% set online = usuario.en_linea if usuario.en_linea is defined else False %}
+                        <span class="absolute bottom-2 right-2 w-4 h-4 rounded-full border-2 border-card {{ 'bg-green-500' if online else 'bg-gray-400' }}" aria-label="{{ 'En línea' if online else 'Desconectado' }}"></span>
+                    </div>
 
-                            <!-- Estado Badge -->
-                            {% if usuario.estado_cuenta.value == 'Activo' %}
-                            <span
-                                class="text-xs font-semibold inline-block py-1 px-2.5 uppercase rounded-full text-green-600 bg-green-200 dark:text-green-300 dark:bg-green-900/50">
-                                Activo
-                            </span>
-                            {% elif usuario.estado_cuenta.value == 'PendienteVerificacion' %}
-                            <span
-                                class="text-xs font-semibold inline-block py-1 px-2.5 uppercase rounded-full text-yellow-600 bg-yellow-200 dark:text-yellow-300 dark:bg-yellow-900/50">
-                                Pendiente
-                            </span>
-                            {% endif %}
+                    <div class="flex flex-col gap-3">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                            <div class="flex items-center gap-2">
+                                <h1 class="text-foreground text-2xl sm:text-3xl font-bold leading-tight tracking-tight">{{ usuario.nombres }} {{ usuario.apellidos }}</h1>
+                                {% if usuario.verificado is defined and usuario.verificado %}
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-200 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300">
+                                    <span class="material-symbols-outlined text-sm mr-1">verified</span> Verificado
+                                </span>
+                                {% endif %}
+                            </div>
+                            <div class="flex gap-2 flex-wrap justify-center sm:justify-end">
+                                {% if usuario.rol.value == 'Admin' %}
+                                <span class="text-xs font-semibold inline-block py-1 px-2.5 uppercase rounded-full text-purple-600 bg-purple-200 dark:text-purple-300 dark:bg-purple-900/50">Admin</span>
+                                {% elif usuario.rol.value == 'Moderador' %}
+                                <span class="text-xs font-semibold inline-block py-1 px-2.5 uppercase rounded-full text-blue-600 bg-blue-200 dark:text-blue-300 dark:bg-blue-900/50">Moderador</span>
+                                {% elif usuario.rol.value == 'Editor' %}
+                                <span class="text-xs font-semibold inline-block py-1 px-2.5 uppercase rounded-full text-green-600 bg-green-200 dark:text-green-300 dark:bg-green-900/50">Editor</span>
+                                {% else %}
+                                <span class="text-xs font-semibold inline-block py-1 px-2.5 uppercase rounded-full text-gray-600 bg-gray-200 dark:text-gray-300 dark:bg-gray-800">Usuario</span>
+                                {% endif %}
+                                {% if usuario.estado_cuenta.value == 'Activo' %}
+                                <span class="text-xs font-semibold inline-block py-1 px-2.5 uppercase rounded-full text-green-600 bg-green-200 dark:text-green-300 dark:bg-green-900/50">Activo</span>
+                                {% elif usuario.estado_cuenta.value == 'PendienteVerificacion' %}
+                                <span class="text-xs font-semibold inline-block py-1 px-2.5 uppercase rounded-full text-yellow-600 bg-yellow-200 dark:text-yellow-300 dark:bg-yellow-900/50">Pendiente</span>
+                                {% endif %}
+                                {% if usuario.credenciales is defined and usuario.credenciales %}
+                                {% for c in usuario.credenciales %}
+                                <span class="text-xs font-semibold inline-block py-1 px-2.5 rounded-full bg-secondary text-secondary-foreground">{{ c }}</span>
+                                {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <p class="text-muted-foreground text-base">@{{ usuario.username }}</p>
+                        {% if usuario.biografia %}
+                        <p class="text-foreground/80 text-base max-w-2xl xl:max-w-3xl">{{ usuario.biografia }}</p>
+                        {% endif %}
+
+                        <div class="flex flex-wrap gap-3">
+                            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-secondary text-secondary-foreground">
+                                <span class="material-symbols-outlined text-base text-muted-foreground">description</span>
+                                <span class="text-sm font-medium">{{ usuario.total_publicaciones or 0 }} publicaciones</span>
+                            </div>
+                            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-secondary text-secondary-foreground">
+                                <span class="material-symbols-outlined text-base text-muted-foreground">forum</span>
+                                <span class="text-sm font-medium">{{ usuario.total_comentarios or 0 }} comentarios</span>
+                            </div>
+                            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-secondary text-secondary-foreground">
+                                <span class="material-symbols-outlined text-base text-muted-foreground">group</span>
+                                <span class="text-sm font-medium">{{ usuario.total_seguidores or 0 }} seguidores</span>
+                            </div>
+                        </div>
+
+                        <div class="flex w-full sm:w-auto shrink-0 justify-center sm:justify-start gap-3 pt-1">
+                            <a href="/usuarios/{{ usuario.username }}/editar" class="inline-flex items-center gap-2 rounded-md text-sm font-semibold ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4">
+                                <span class="material-symbols-outlined text-base">edit</span>
+                                Editar
+                            </a>
+                            <form action="/usuarios/{{ usuario.username }}/eliminar" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este usuario? Esta acción no se puede deshacer.');" class="flex-1 sm:flex-auto max-w-[480px]">
+                                <button type="submit" class="inline-flex items-center gap-2 justify-center rounded-md text-sm font-semibold ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-destructive text-destructive-foreground hover:bg-destructive/90 h-10 px-4 w-full sm:w-auto">
+                                    <span class="material-symbols-outlined text-base">delete</span>
+                                    Eliminar
+                                </button>
+                            </form>
                         </div>
                     </div>
-                    <p class="text-muted-foreground text-base font-normal leading-normal">
-                        @{{ usuario.username }}
-                    </p>
-                    {% if usuario.biografia %}
-                    <p class="text-foreground/80 text-base font-normal leading-normal max-w-md">
-                        {{ usuario.biografia }}
-                    </p>
-                    {% endif %}
                 </div>
             </div>
-
-            <!-- Botones de Acción -->
-            <div class="flex w-full sm:w-auto shrink-0 justify-center gap-3">
-                <a href="/usuarios/{{ usuario.username }}/editar"
-                    class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-accent text-accent-foreground text-sm font-bold leading-normal tracking-[0.015em] flex-1 sm:flex-auto hover:bg-accent/80 transition-colors">
-                    <span class="truncate">Editar</span>
-                </a>
-                <form action="/usuarios/{{ usuario.username }}/eliminar" method="POST"
-                    onsubmit="return confirm('¿Estás seguro de que deseas eliminar este usuario? Esta acción no se puede deshacer.');"
-                    class="flex-1 sm:flex-auto">
-                    <button type="submit"
-                        class="w-full flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-destructive text-destructive-foreground text-sm font-bold leading-normal tracking-[0.015em] hover:bg-destructive/90 transition-colors">
-                        <span class="truncate">Eliminar</span>
-                    </button>
-                </form>
-            </div>
-        </div>
 
         <!-- Tabs de Navegación -->
         <div class="pb-3">
@@ -111,9 +129,9 @@
         </div>
 
         <!-- Grid de Contenido -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-6 xl:gap-8">
             <!-- Columna Principal (2/3) -->
-            <div class="md:col-span-2 flex flex-col gap-6">
+            <div class="lg:col-span-2 xl:col-span-3 flex flex-col gap-6">
                 <!-- Información Personal -->
                 <div class="flex flex-col gap-4 rounded-lg bg-card/50 border border-border/50 p-5">
                     <h2 class="text-foreground text-xl font-bold leading-tight tracking-tight flex items-center gap-2">
@@ -284,7 +302,6 @@
             </div>
         </div>
     </div>
-</div>
-</div>
-</div>
+    </div>
+    </div>
 {% endblock %}

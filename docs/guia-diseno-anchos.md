@@ -38,8 +38,8 @@ Cada template debe envolver su contenido en un contenedor con estas clases:
 | Tipo de Contenido | Ancho Máximo | Uso |
 |-------------------|--------------|-----|
 | **Contenido de lectura** | `max-w-[960px]` (60rem) | Perfiles, artículos, formularios |
-| **Dashboards/Tablas** | `max-w-7xl` (80rem) | Listados amplios, dashboards |
-| **Landing pages** | `max-w-7xl` (80rem) | Páginas de inicio, marketing |
+| **Dashboards/Tablas** | `max-w-6xl` (80rem) | Listados amplios, dashboards |
+| **Landing pages** | `max-w-6xl` (80rem) | Páginas de inicio, marketing |
 | **Formularios estrechos** | `max-w-2xl` (42rem) | Login, registro |
 
 ### 4. Sistema de Padding Responsivo
@@ -91,7 +91,7 @@ xl: 1280px  (desktop)
 {% block content %}
 <div class="min-h-screen bg-background">
     <div class="px-4 sm:px-10 lg:px-20 py-5 sm:py-10">
-        <div class="max-w-7xl mx-auto">
+        <div class="max-w-6xl mx-auto">
             <!-- Tabla ancha -->
         </div>
     </div>
@@ -130,7 +130,7 @@ xl: 1280px  (desktop)
 ❌ **NO** aplicar `max-w` en `base.html`:
 ```html
 <!-- MAL -->
-<main class="grow max-w-7xl mx-auto">
+<main class="grow max-w-6xl mx-auto">
 ```
 
 ❌ **NO** usar anchos fijos en píxeles:
@@ -142,7 +142,7 @@ xl: 1280px  (desktop)
 ❌ **NO** mezclar múltiples niveles de `max-w`:
 ```html
 <!-- MAL -->
-<div class="max-w-7xl">
+<div class="max-w-6xl">
     <div class="max-w-5xl">
         <!-- Confuso y redundante -->
     </div>
