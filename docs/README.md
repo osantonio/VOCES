@@ -12,6 +12,9 @@ Bienvenido a la documentación técnica del proyecto VOCES.
 - **[Modelos de Datos y Auditoría](./modelos-datos.md)**  
   Documentación detallada de los modelos `Usuario`, `PerfilDemografico` y el sistema de auditoría `LogActividad` con ejemplos JSON.
 
+- **[Eliminación de Usuarios](./eliminacion-usuarios.md)**  
+  Documentación de la funcionalidad de eliminación de usuarios, incluyendo endpoint backend, interfaz de usuario y consideraciones de seguridad.
+
 - **[Solución de Errores Comunes](./errores-comunes.md)**  
   Guía de troubleshooting para problemas frecuentes como dependencias faltantes (`python-multipart`) o conflictos de nombres en modelos (`metadata`).
 
@@ -34,4 +37,4 @@ Esta documentación se actualiza conforme evoluciona el proyecto. Si encuentras 
 
 ---
 
-**Última actualización:** 2025-11-30
+**Última actualización:** 2025-12-02

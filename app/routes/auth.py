@@ -7,21 +7,42 @@ from typing import Annotated, Optional
 from fastapi import APIRouter, Depends, status, Request, Form, Response
 from fastapi.responses import RedirectResponse, HTMLResponse
 from fastapi.security import OAuth2PasswordRequestForm
-from sqlmodel import Session, select
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlmodel import select
 
-from app.core.database import get_session
-from app.core.seguridad import hashear_password, verificar_password
-from app.core.auditoria import registrar_actividad
-from app.core.templates import templates
+from app.core import (
+    get_session,
+    hashear_password,
+    verificar_password,
+    registrar_actividad,
+    templates,
+)
 from app.models import Usuario, PerfilDemografico, TipoAccion
 
 router = APIRouter(prefix="/auth", tags=["Autenticación"])
 
 
 @router.get("/registro", response_class=HTMLResponse)
-async def registro_view(request: Request):
-    """Renderiza el formulario de registro."""
-    return templates.TemplateResponse("auth/registro.html", {"request": request})
+async def registro_view(
+    request: Request,
+    error: Optional[str] = None,
+    nombres: Optional[str] = None,
+    apellidos: Optional[str] = None,
+    username: Optional[str] = None,
+    email: Optional[str] = None,
+):
+    """Renderiza el formulario de registro con datos previos si hay error."""
+    return templates.TemplateResponse(
+        "auth/registro.html",
+        {
+            "request": request,
+            "error": error,
+            "nombres": nombres or "",
+            "apellidos": apellidos or "",
+            "username": username or "",
+            "email": email or "",
+        },
+    )
 
 
 @router.post("/registro")
@@ -32,7 +53,7 @@ async def registrar_usuario(
     username: Annotated[str, Form()],
     email: Annotated[str, Form()],
     password: Annotated[str, Form()],
-    session: Session = Depends(get_session),
+    session: AsyncSession = Depends(get_session),
 ):
     """
     Procesa el formulario de registro.
@@ -41,22 +62,27 @@ async def registrar_usuario(
     statement = select(Usuario).where(
         (Usuario.username == username) | (Usuario.email == email)
     )
-    existing_user = session.exec(statement).first()
+    result = await session.execute(statement)
+    existing_user = result.scalars().first()
 
     if existing_user:
-        registrar_actividad(
+        await registrar_actividad(
             session=session,
             tipo_accion=TipoAccion.RegistroExitoso,
             descripcion="Intento de registro fallido: usuario o email ya existe",
             exitoso=False,
             detalles={"username": username, "email": email},
         )
-        # Volver a renderizar con error
+        # Volver a renderizar con error y datos previos
         return templates.TemplateResponse(
             "auth/registro.html",
             {
                 "request": request,
                 "error": "El nombre de usuario o correo ya están registrados",
+                "nombres": nombres,
+                "apellidos": apellidos,
+                "username": username,
+                "email": email,
             },
             status_code=status.HTTP_400_BAD_REQUEST,
         )
@@ -73,16 +99,16 @@ async def registrar_usuario(
     # 3. Guardar en DB
     try:
         session.add(nuevo_usuario)
-        session.commit()
-        session.refresh(nuevo_usuario)
+        await session.commit()
+        await session.refresh(nuevo_usuario)
 
         # 4. Crear perfil demográfico
         perfil = PerfilDemografico(usuario_id=nuevo_usuario.id)
         session.add(perfil)
-        session.commit()
+        await session.commit()
 
         # 5. Registrar actividad
-        registrar_actividad(
+        await registrar_actividad(
             session=session,
             tipo_accion=TipoAccion.RegistroExitoso,
             descripcion="Usuario registrado exitosamente",
@@ -90,15 +116,15 @@ async def registrar_usuario(
             detalles={"username": username, "email": email},
         )
 
-        # Redirigir al login
+        # Redirigir a la página principal
         return RedirectResponse(
-            url="/auth/login?mensaje=Registro exitoso, por favor inicia sesión",
+            url="/",
             status_code=status.HTTP_303_SEE_OTHER,
         )
 
     except Exception as e:
-        session.rollback()
-        registrar_actividad(
+        await session.rollback()
+        await registrar_actividad(
             session=session,
             tipo_accion=TipoAccion.ErrorSistema,
             descripcion="Error al registrar usuario",
@@ -108,7 +134,14 @@ async def registrar_usuario(
         )
         return templates.TemplateResponse(
             "auth/registro.html",
-            {"request": request, "error": f"Error interno: {str(e)}"},
+            {
+                "request": request,
+                "error": f"Error interno: {str(e)}",
+                "nombres": nombres,
+                "apellidos": apellidos,
+                "username": username,
+                "email": email,
+            },
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
 
@@ -126,18 +159,19 @@ async def login(
     request: Request,
     response: Response,
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
-    session: Session = Depends(get_session),
+    session: AsyncSession = Depends(get_session),
 ):
     """
     Procesa el login y establece cookie de sesión.
     """
     # 1. Buscar usuario
     statement = select(Usuario).where(Usuario.username == form_data.username)
-    usuario = session.exec(statement).first()
+    result = await session.execute(statement)
+    usuario = result.scalars().first()
 
     # 2. Verificar credenciales
     if not usuario or not verificar_password(form_data.password, usuario.password):
-        registrar_actividad(
+        await registrar_actividad(
             session=session,
             tipo_accion=TipoAccion.IntentoLoginFallido,
             descripcion="Credenciales inválidas",
@@ -151,7 +185,7 @@ async def login(
         )
 
     # 3. Registrar login exitoso
-    registrar_actividad(
+    await registrar_actividad(
         session=session,
         tipo_accion=TipoAccion.Login,
         descripcion="Inicio de sesión exitoso",

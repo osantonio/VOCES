@@ -1,0 +1,162 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Editar Perfil - {{ usuario.username }} - VOCES{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-background">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Header -->
+        <div class="mb-8 flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-foreground">Editar Perfil</h1>
+                <p class="mt-2 text-sm text-muted-foreground">
+                    Actualiza tu información personal y demográfica
+                </p>
+            </div>
+            <a href="/usuarios/{{ usuario.username }}" class="text-sm text-primary hover:underline">
+                Cancelar y volver al perfil
+            </a>
+        </div>
+
+        <form method="POST" class="space-y-8">
+            <!-- Información Básica -->
+            <div class="bg-card border border-border rounded-lg shadow-sm p-6">
+                <h2 class="text-lg font-semibold text-foreground mb-4 flex items-center">
+                    <span class="material-symbols-outlined text-primary mr-2">person</span>
+                    Información Básica
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label for="nombres" class="text-sm font-medium text-foreground">Nombres</label>
+                        <input type="text" id="nombres" name="nombres" value="{{ usuario.nombres }}" required
+                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="apellidos" class="text-sm font-medium text-foreground">Apellidos</label>
+                        <input type="text" id="apellidos" name="apellidos" value="{{ usuario.apellidos }}" required
+                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                    </div>
+                    <div class="col-span-1 md:col-span-2 space-y-2">
+                        <label for="biografia" class="text-sm font-medium text-foreground">Biografía</label>
+                        <textarea id="biografia" name="biografia" rows="3"
+                            class="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">{{ usuario.biografia or '' }}</textarea>
+                        <p class="text-xs text-muted-foreground">Breve descripción sobre ti.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Información Demográfica -->
+            <div class="bg-card border border-border rounded-lg shadow-sm p-6">
+                <h2 class="text-lg font-semibold text-foreground mb-4 flex items-center">
+                    <span class="material-symbols-outlined text-primary mr-2">location_on</span>
+                    Información Demográfica
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label for="telefono" class="text-sm font-medium text-foreground">Teléfono</label>
+                        <input type="tel" id="telefono" name="telefono"
+                            value="{{ usuario.perfil_demografico.telefono if usuario.perfil_demografico else '' }}"
+                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="fecha_nacimiento" class="text-sm font-medium text-foreground">Fecha de
+                            Nacimiento</label>
+                        <input type="date" id="fecha_nacimiento" name="fecha_nacimiento"
+                            value="{{ usuario.perfil_demografico.fecha_nacimiento.strftime('%Y-%m-%d') if usuario.perfil_demografico and usuario.perfil_demografico.fecha_nacimiento else '' }}"
+                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="sexo" class="text-sm font-medium text-foreground">Sexo</label>
+                        <select id="sexo" name="sexo"
+                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                            <option value="">Seleccionar...</option>
+                            <option value="M" {% if usuario.perfil_demografico and usuario.perfil_demografico.sexo and
+                                usuario.perfil_demografico.sexo.value=='M' %}selected{% endif %}>Masculino</option>
+                            <option value="F" {% if usuario.perfil_demografico and usuario.perfil_demografico.sexo and
+                                usuario.perfil_demografico.sexo.value=='F' %}selected{% endif %}>Femenino</option>
+                            <option value="O" {% if usuario.perfil_demografico and usuario.perfil_demografico.sexo and
+                                usuario.perfil_demografico.sexo.value=='O' %}selected{% endif %}>Otro</option>
+                        </select>
+                    </div>
+                    <div class="space-y-2">
+                        <label for="ciudad" class="text-sm font-medium text-foreground">Ciudad</label>
+                        <input type="text" id="ciudad" name="ciudad"
+                            value="{{ usuario.perfil_demografico.ciudad if usuario.perfil_demografico else '' }}"
+                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="departamento" class="text-sm font-medium text-foreground">Departamento</label>
+                        <input type="text" id="departamento" name="departamento"
+                            value="{{ usuario.perfil_demografico.departamento if usuario.perfil_demografico else '' }}"
+                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="pais" class="text-sm font-medium text-foreground">País</label>
+                        <input type="text" id="pais" name="pais"
+                            value="{{ usuario.perfil_demografico.pais if usuario.perfil_demografico else 'CO' }}"
+                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="nivel_educativo" class="text-sm font-medium text-foreground">Nivel Educativo</label>
+                        <input type="text" id="nivel_educativo" name="nivel_educativo"
+                            value="{{ usuario.perfil_demografico.nivel_educativo if usuario.perfil_demografico else '' }}"
+                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="ocupacion" class="text-sm font-medium text-foreground">Ocupación</label>
+                        <input type="text" id="ocupacion" name="ocupacion"
+                            value="{{ usuario.perfil_demografico.ocupacion if usuario.perfil_demografico else '' }}"
+                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Redes Sociales -->
+            <div class="bg-card border border-border rounded-lg shadow-sm p-6">
+                <h2 class="text-lg font-semibold text-foreground mb-4 flex items-center">
+                    <span class="material-symbols-outlined text-primary mr-2">share</span>
+                    Redes Sociales
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label for="twitter_url" class="text-sm font-medium text-foreground">Twitter URL</label>
+                        <input type="url" id="twitter_url" name="twitter_url" value="{{ usuario.twitter_url or '' }}"
+                            placeholder="https://twitter.com/usuario"
+                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="facebook_url" class="text-sm font-medium text-foreground">Facebook URL</label>
+                        <input type="url" id="facebook_url" name="facebook_url" value="{{ usuario.facebook_url or '' }}"
+                            placeholder="https://facebook.com/usuario"
+                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="instagram_url" class="text-sm font-medium text-foreground">Instagram URL</label>
+                        <input type="url" id="instagram_url" name="instagram_url"
+                            value="{{ usuario.instagram_url or '' }}" placeholder="https://instagram.com/usuario"
+                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="linkedin_url" class="text-sm font-medium text-foreground">LinkedIn URL</label>
+                        <input type="url" id="linkedin_url" name="linkedin_url" value="{{ usuario.linkedin_url or '' }}"
+                            placeholder="https://linkedin.com/in/usuario"
+                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de Acción -->
+            <div class="flex items-center justify-end gap-4">
+                <a href="/usuarios/{{ usuario.username }}"
+                    class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
+                    Cancelar
+                </a>
+                <button type="submit"
+                    class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
+                    Guardar Cambios
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

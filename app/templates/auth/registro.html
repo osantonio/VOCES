@@ -47,7 +47,7 @@
                         <label for="nombres" class="block text-sm font-medium text-foreground mb-2">
                             Nombres
                         </label>
-                        <input id="nombres" name="nombres" type="text" required
+                        <input id="nombres" name="nombres" type="text" required value="{{ nombres }}"
                             class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                             placeholder="Juan">
                     </div>
@@ -55,7 +55,7 @@
                         <label for="apellidos" class="block text-sm font-medium text-foreground mb-2">
                             Apellidos
                         </label>
-                        <input id="apellidos" name="apellidos" type="text" required
+                        <input id="apellidos" name="apellidos" type="text" required value="{{ apellidos }}"
                             class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                             placeholder="Pérez">
                     </div>
@@ -65,7 +65,7 @@
                     <label for="username" class="block text-sm font-medium text-foreground mb-2">
                         Usuario
                     </label>
-                    <input id="username" name="username" type="text" required
+                    <input id="username" name="username" type="text" required value="{{ username }}"
                         class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                         placeholder="juanperez">
                     <p class="mt-1 text-xs text-muted-foreground">Solo letras, números y guiones.</p>
@@ -75,7 +75,7 @@
                     <label for="email" class="block text-sm font-medium text-foreground mb-2">
                         Correo Electrónico
                     </label>
-                    <input id="email" name="email" type="email" autocomplete="email" required
+                    <input id="email" name="email" type="email" autocomplete="email" required value="{{ email }}"
                         class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                         placeholder="juan@ejemplo.com">
                 </div>
@@ -89,7 +89,6 @@
                         placeholder="••••••••">
                     <p class="mt-1 text-xs text-muted-foreground">Mínimo 8 caracteres.</p>
                 </div>
-
                 <div class="flex items-center space-x-2">
                     <input id="terms" name="terms" type="checkbox" required
                         class="h-4 w-4 rounded border-input text-primary focus:ring-ring">

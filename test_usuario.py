@@ -3,6 +3,7 @@ Script de prueba para validar el modelo Usuario refactorizado.
 """
 
 from app.models.usuario import Usuario, RolUsuario, generar_uuid_personalizado
+from pydantic import ValidationError
 
 
 def test_modelo_usuario():
@@ -36,8 +37,8 @@ def test_modelo_usuario():
             username="juan_perez",
             email="juan.perez@example.com",
             password="password123",
-            nombre="Juan",
-            apellido="Pérez",
+            nombres="Juan",
+            apellidos="Pérez",
         )
         print(f"  ID generado: {usuario.id}")
         print(f"  Username: {usuario.username}")
@@ -49,47 +50,56 @@ def test_modelo_usuario():
         print(f"  ✗ Error al crear instancia: {e}")
         raise
 
-    # Test 4: Validación de email
+    # Test 4: Validación de email (usa model_validate)
     print("\n[Test 4] Validación de email")
     try:
-        usuario_email_invalido = Usuario(
-            username="test_user",
-            email="email_invalido",
-            password="password123",
-            nombre="Test",
-            apellido="User",
+        Usuario.model_validate(
+            {
+                "username": "test_user",
+                "email": "email_invalido",
+                "password": "password123",
+                "nombres": "Test",
+                "apellidos": "User",
+            }
         )
         print("  ✗ Debería haber fallado con email inválido")
-    except ValueError as e:
-        print(f"  ✓ Validación correcta: {e}")
+        assert False, "Email inválido no fue rechazado"
+    except ValidationError as e:
+        print("  ✓ Validación correcta: email inválido rechazado")
 
-    # Test 5: Validación de password
+    # Test 5: Validación de password (usa model_validate)
     print("\n[Test 5] Validación de password")
     try:
-        usuario_pass_corto = Usuario(
-            username="test_user2",
-            email="test@example.com",
-            password="123",
-            nombre="Test",
-            apellido="User",
+        Usuario.model_validate(
+            {
+                "username": "test_user2",
+                "email": "test@example.com",
+                "password": "123",
+                "nombres": "Test",
+                "apellidos": "User",
+            }
         )
         print("  ✗ Debería haber fallado con password corto")
-    except ValueError as e:
-        print(f"  ✓ Validación correcta: {e}")
+        assert False, "Password corto no fue rechazado"
+    except ValidationError:
+        print("  ✓ Validación correcta: password corto rechazado")
 
-    # Test 6: Validación de username
+    # Test 6: Validación de username (usa model_validate)
     print("\n[Test 6] Validación de username")
     try:
-        usuario_username_invalido = Usuario(
-            username="usuario con espacios!",
-            email="test2@example.com",
-            password="password123",
-            nombre="Test",
-            apellido="User",
+        Usuario.model_validate(
+            {
+                "username": "usuario con espacios!",
+                "email": "test2@example.com",
+                "password": "password123",
+                "nombres": "Test",
+                "apellidos": "User",
+            }
         )
         print("  ✗ Debería haber fallado con username inválido")
-    except ValueError as e:
-        print(f"  ✓ Validación correcta: {e}")
+        assert False, "Username inválido no fue rechazado"
+    except ValidationError:
+        print("  ✓ Validación correcta: username inválido rechazado")
 
     print("\n" + "=" * 60)
     print("✓ TODAS LAS PRUEBAS PASARON CORRECTAMENTE")

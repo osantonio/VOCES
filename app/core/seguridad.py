@@ -1,47 +1,37 @@
-"""
-Módulo de seguridad para hasheo de contraseñas y autenticación.
-"""
+import hashlib
+import base64
+import bcrypt
 
-from passlib.context import CryptContext
 
-# Configuración del contexto de hasheo con bcrypt
-contexto_password = CryptContext(schemes=["bcrypt"], deprecated="auto")
+def _pre_hash_password(password: str) -> bytes:
+    """
+    Realiza un pre-hashing de la contraseña usando SHA-256.
+    Retorna bytes listos para ser procesados por bcrypt.
+    """
+    # 1. SHA-256 genera un digest de 32 bytes
+    digest = hashlib.sha256(password.encode("utf-8")).digest()
+    # 2. Codificamos en base64 para tener caracteres seguros
+    return base64.b64encode(digest)
 
 
 def hashear_password(password: str) -> str:
     """
-    Hashea una contraseña usando bcrypt.
-
-    Args:
-        password: Contraseña en texto plano
-
-    Returns:
-        Hash de la contraseña
-
-    Example:
-        >>> hash = hashear_password("MiPassword123")
-        >>> print(hash)
-        $2b$12$...
+    Hashea una contraseña usando bcrypt directamente (con pre-hashing SHA-256).
     """
-    return contexto_password.hash(password)
+    password_segura = _pre_hash_password(password)
+    # Generamos salt y hasheamos
+    # bcrypt.hashpw devuelve bytes, decodificamos a str para guardar en DB
+    hashed = bcrypt.hashpw(password_segura, bcrypt.gensalt())
+    return hashed.decode("utf-8")
 
 
 def verificar_password(password_plano: str, password_hasheado: str) -> bool:
     """
-    Verifica si una contraseña en texto plano coincide con su hash.
-
-    Args:
-        password_plano: Contraseña en texto plano a verificar
-        password_hasheado: Hash de la contraseña almacenado
-
-    Returns:
-        True si la contraseña es correcta, False en caso contrario
-
-    Example:
-        >>> hash = hashear_password("MiPassword123")
-        >>> verificar_password("MiPassword123", hash)
-        True
-        >>> verificar_password("OtraPassword", hash)
-        False
+    Verifica si una contraseña coincide con su hash usando bcrypt.
     """
-    return contexto_password.verify(password_plano, password_hasheado)
+    try:
+        password_segura = _pre_hash_password(password_plano)
+        # bcrypt.checkpw espera bytes en ambos argumentos
+        return bcrypt.checkpw(password_segura, password_hasheado.encode("utf-8"))
+    except Exception:
+        return False

@@ -1,0 +1,152 @@
+{% set usuario_actual = request.state.usuario_actual %}
+<nav class="bg-background border-b border-border sticky top-0 z-50" role="navigation" aria-label="Barra de navegación">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+            <div class="flex items-center gap-2">
+                <button id="sidebar-toggle" type="button" aria-label="Abrir menú"
+                    class="inline-flex items-center justify-center rounded-md text-sm p-2 text-muted-foreground hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                    <span class="material-symbols-outlined" aria-hidden="true">menu</span>
+                </button>
+                <div class="shrink-0 flex items-center">
+                    <a href="/" class="text-2xl font-bold text-primary tracking-tight flex items-center gap-2"
+                        aria-label="Inicio">
+                        <span class="material-symbols-outlined" aria-hidden="true">article</span>
+                        VOCES
+                    </a>
+                </div>
+                <div class="hidden sm:ml-6 sm:flex sm:space-x-8" role="menubar">
+                    <a href="/"
+                        class="border-transparent text-muted-foreground hover:border-border hover:text-foreground inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors"
+                        role="menuitem">
+                        Inicio
+                    </a>
+                    <a href="#"
+                        class="border-transparent text-muted-foreground hover:border-border hover:text-foreground inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors"
+                        role="menuitem">
+                        Blog
+                    </a>
+                    <a href="#"
+                        class="border-transparent text-muted-foreground hover:border-border hover:text-foreground inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors"
+                        role="menuitem">
+                        Reviews
+                    </a>
+                </div>
+            </div>
+            <div class="hidden sm:ml-6 sm:flex sm:items-center space-x-4">
+                <button id="theme-toggle" type="button" aria-label="Cambiar tema"
+                    class="text-muted-foreground hover:bg-accent hover:text-foreground focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5">
+                    <span id="theme-toggle-dark-icon" class="material-symbols-outlined"
+                        aria-hidden="true">dark_mode</span>
+                    <span id="theme-toggle-light-icon" class="hidden material-symbols-outlined"
+                        aria-hidden="true">light_mode</span>
+                </button>
+
+                {% if usuario_actual %}
+                <div class="relative">
+                    <button id="user-menu-button" type="button" aria-haspopup="true" aria-expanded="false"
+                        class="inline-flex items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ring-offset-background w-9 h-9">
+                        {% if usuario_actual.avatar_url %}
+                        <img src="{{ usuario_actual.avatar_url }}" alt="Avatar de {{ usuario_actual.username }}"
+                            class="w-9 h-9 rounded-full object-cover border border-border" />
+                        {% else %}
+                        <span
+                            class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-accent text-accent-foreground text-sm font-semibold">
+                            {{ user_initials(usuario_actual) }}
+                        </span>
+                        {% endif %}
+                        <span class="sr-only">Abrir menú de usuario</span>
+                    </button>
+                    <div id="user-dropdown"
+                        class="absolute right-0 mt-2 w-64 bg-popover text-popover-foreground border border-border rounded-md shadow-lg origin-top-right transition ease-out duration-200 hidden"
+                        role="menu" aria-labelledby="user-menu-button">
+                        <div class="px-4 py-3 border-b border-border">
+                            <p class="text-sm font-medium text-foreground">{{ usuario_actual.nombres }} {{
+                                usuario_actual.apellidos }}</p>
+                            <p class="text-xs text-muted-foreground truncate">{{ usuario_actual.email }}</p>
+                        </div>
+                        <div class="py-1">
+                            <a href="/usuarios/{{ usuario_actual.username }}"
+                                class="block px-4 py-2 text-sm text-foreground hover:bg-accent hover:text-accent-foreground"
+                                role="menuitem">Perfil</a>
+                            <a href="/dashboard"
+                                class="block px-4 py-2 text-sm text-foreground hover:bg-accent hover:text-accent-foreground"
+                                role="menuitem">Dashboard</a>
+                            <a href="/auth/logout"
+                                class="block px-4 py-2 text-sm text-foreground hover:bg-accent hover:text-accent-foreground"
+                                role="menuitem">Cerrar sesión</a>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                {% if request.url.path != '/auth/login' %}
+                <a href="/auth/login"
+                    class="text-muted-foreground hover:text-foreground px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                    Iniciar Sesión
+                </a>
+                {% endif %}
+                {% if request.url.path != '/auth/registro' %}
+                <a href="/auth/registro"
+                    class="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm">
+                    Registrarse
+                </a>
+                {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</nav>
+
+<script>
+    (function () {
+        var btn = document.getElementById('user-menu-button');
+        var menu = document.getElementById('user-dropdown');
+        if (!btn || !menu) return;
+
+        function openMenu() {
+            menu.classList.remove('hidden');
+            btn.setAttribute('aria-expanded', 'true');
+            // Animación suave
+            menu.style.opacity = '1';
+            menu.style.transform = 'scale(1)';
+        }
+
+        function closeMenu() {
+            menu.classList.add('hidden');
+            btn.setAttribute('aria-expanded', 'false');
+            menu.style.opacity = '0';
+            menu.style.transform = 'scale(0.98)';
+        }
+
+        btn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            if (menu.classList.contains('hidden')) {
+                openMenu();
+            } else {
+                closeMenu();
+            }
+        });
+
+        btn.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                openMenu();
+                var firstItem = menu.querySelector('[role="menuitem"]');
+                if (firstItem) firstItem.focus();
+            } else if (e.key === 'Escape') {
+                closeMenu();
+            }
+        });
+
+        document.addEventListener('click', function (e) {
+            if (!menu.contains(e.target) && e.target !== btn) {
+                closeMenu();
+            }
+        });
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                closeMenu();
+            }
+        });
+    })();
+</script>

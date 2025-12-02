@@ -1,0 +1,134 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Detalle de Log #{{ log.id }} - VOCES{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-background">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Botón Volver -->
+        <div class="mb-6">
+            <a href="/logs"
+                class="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <span class="material-symbols-outlined text-base mr-1">arrow_back</span>
+                Volver al listado
+            </a>
+        </div>
+
+        <!-- Header del Log -->
+        <div class="bg-card border border-border rounded-lg shadow-sm overflow-hidden mb-6">
+            <div class="px-6 py-8 border-b border-border">
+                <div class="flex items-start justify-between">
+                    <div>
+                        <div class="flex items-center gap-3 mb-2">
+                            <h1 class="text-2xl font-bold text-foreground">Log #{{ log.id }}</h1>
+                            {% if log.exitoso %}
+                            <span
+                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">
+                                <span class="material-symbols-outlined text-xs mr-1">check_circle</span>
+                                Exitoso
+                            </span>
+                            {% else %}
+                            <span
+                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300">
+                                <span class="material-symbols-outlined text-xs mr-1">error</span>
+                                Fallido
+                            </span>
+                            {% endif %}
+                        </div>
+                        <p class="text-muted-foreground">{{ log.descripcion }}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm font-medium text-foreground">{{ log.creado_en.strftime('%d/%m/%Y') }}</p>
+                        <p class="text-sm text-muted-foreground">{{ log.creado_en.strftime('%H:%M:%S') }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Información Principal -->
+            <div class="px-6 py-6 bg-muted/30">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Usuario -->
+                    <div>
+                        <h3 class="text-sm font-medium text-muted-foreground mb-2">Usuario</h3>
+                        <div class="flex items-center">
+                            {% if usuario %}
+                            <div class="shrink-0 h-10 w-10">
+                                <div class="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                                    <span class="text-primary font-semibold text-sm">
+                                        {{ usuario.nombres[0] }}{{ usuario.apellidos[0] }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="ml-3">
+                                <div class="text-sm font-medium text-foreground">
+                                    {{ usuario.nombres }} {{ usuario.apellidos }}
+                                </div>
+                                <div class="text-sm text-muted-foreground">
+                                    @{{ usuario.username }}
+                                </div>
+                            </div>
+                            {% else %}
+                            <span class="text-sm text-muted-foreground italic">Anónimo / Sistema</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Acción -->
+                    <div>
+                        <h3 class="text-sm font-medium text-muted-foreground mb-2">Tipo de Acción</h3>
+                        <span
+                            class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-secondary text-secondary-foreground">
+                            {{ log.tipo_accion.value }}
+                        </span>
+                    </div>
+
+                    <!-- Contexto -->
+                    <div>
+                        <h3 class="text-sm font-medium text-muted-foreground mb-2">Contexto</h3>
+                        <dl class="space-y-1">
+                            <div class="flex justify-between">
+                                <dt class="text-xs text-muted-foreground">IP:</dt>
+                                <dd class="text-xs font-mono text-foreground">{{ log.ip_address or 'N/A' }}</dd>
+                            </div>
+                            <div class="flex justify-between">
+                                <dt class="text-xs text-muted-foreground">User Agent:</dt>
+                                <dd class="text-xs font-mono text-foreground truncate max-w-[150px]"
+                                    title="{{ log.user_agent }}">
+                                    {{ log.user_agent or 'N/A' }}
+                                </dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detalles JSON -->
+        {% if log.detalles %}
+        <div class="bg-card border border-border rounded-lg shadow-sm overflow-hidden mb-6">
+            <div class="px-6 py-4 border-b border-border">
+                <h2 class="text-lg font-semibold text-foreground flex items-center">
+                    <span class="material-symbols-outlined text-primary mr-2">data_object</span>
+                    Detalles Adicionales
+                </h2>
+            </div>
+            <div class="p-0 bg-zinc-950 overflow-x-auto">
+                <pre
+                    class="p-6 text-sm font-mono text-zinc-300"><code>{{ log.detalles | tojson(indent=2) }}</code></pre>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Mensaje de Error -->
+        {% if log.mensaje_error %}
+        <div class="bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-900/30 rounded-lg p-6">
+            <h2 class="text-lg font-semibold text-red-800 dark:text-red-300 mb-2 flex items-center">
+                <span class="material-symbols-outlined mr-2">warning</span>
+                Mensaje de Error
+            </h2>
+            <p class="text-red-700 dark:text-red-400 font-mono text-sm whitespace-pre-wrap">{{ log.mensaje_error }}</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

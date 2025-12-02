@@ -2,14 +2,14 @@
 Modelo de Auditoría para registrar todas las acciones del usuario.
 """
 
-from datetime import datetime, timezone
 from typing import Optional
-from sqlmodel import Field, SQLModel, Column, JSON
+from sqlmodel import Field, Column, JSON
 
+from app.models.base import CreacionMixin
 from app.models.enums import TipoAccion
 
 
-class LogActividad(SQLModel, table=True):
+class LogActividad(CreacionMixin, table=True):
     """
     Registro de auditoría de todas las acciones del usuario.
     Funciona como un log de consola para análisis, debugging y seguridad.
@@ -68,14 +68,6 @@ class LogActividad(SQLModel, table=True):
         default=None,
         max_length=1000,
         description="Mensaje de error si la acción falló",
-    )
-
-    # Timestamp
-    creado_en: datetime = Field(
-        default_factory=lambda: datetime.now(timezone.utc),
-        nullable=False,
-        index=True,
-        description="Momento exacto en que ocurrió la acción",
     )
 
     # Relación con Usuario (opcional para poder hacer queries)

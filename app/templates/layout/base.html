@@ -21,55 +21,16 @@
 </head>
 
 <body class="h-full flex flex-col bg-background text-foreground antialiased">
-    <!-- Navbar -->
-    <nav class="bg-background border-b border-border sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex">
-                    <div class="shrink-0 flex items-center">
-                        <a href="/" class="text-2xl font-bold text-primary tracking-tight flex items-center gap-2">
-                            <span class="material-symbols-outlined">article</span>
-                            VOCES
-                        </a>
-                    </div>
-                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
-                        <a href="/"
-                            class="border-transparent text-muted-foreground hover:border-border hover:text-foreground inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors">
-                            Inicio
-                        </a>
-                        <a href="#"
-                            class="border-transparent text-muted-foreground hover:border-border hover:text-foreground inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors">
-                            Blog
-                        </a>
-                        <a href="#"
-                            class="border-transparent text-muted-foreground hover:border-border hover:text-foreground inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors">
-                            Reviews
-                        </a>
-                    </div>
-                </div>
-                <div class="hidden sm:ml-6 sm:flex sm:items-center space-x-4">
-                    <button id="theme-toggle" type="button"
-                        class="text-muted-foreground hover:bg-accent hover:text-foreground focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5">
-                        <span id="theme-toggle-dark-icon" class="material-symbols-outlined">dark_mode</span>
-                        <span id="theme-toggle-light-icon" class="hidden material-symbols-outlined">light_mode</span>
-                    </button>
-                    <a href="/auth/login"
-                        class="text-muted-foreground hover:text-foreground px-3 py-2 rounded-md text-sm font-medium transition-colors">
-                        Iniciar Sesión
-                    </a>
-                    <a href="/auth/registro"
-                        class="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm">
-                        Registrarse
-                    </a>
-                </div>
-            </div>
-        </div>
-    </nav>
+    {% include "layout/components/navbar.html" %}
+
+    {% include "layout/components/sidebar.html" %}
 
     <!-- Main Content -->
-    <main class="grow">
-        {% block content %}{% endblock %}
-    </main>
+    <div id="layout-container" class="relative grow">
+        <main id="content-wrapper" class="grow">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
 
     <!-- Footer -->
     <footer class="bg-background border-t border-border mt-auto">
@@ -81,6 +42,76 @@
     </footer>
 
     <script src="{{ url_for('static', path='/js/dark-mode.js') }}?v=3"></script>
+    <script>
+        (function () {
+            var sidebar = document.getElementById('app-sidebar');
+            var overlay = document.getElementById('sidebar-overlay');
+            var toggleBtn = document.getElementById('sidebar-toggle');
+            var content = document.getElementById('content-wrapper');
+            if (!sidebar || !toggleBtn || !content) return;
+
+            function isDesktop() {
+                return window.matchMedia('(min-width: 768px)').matches;
+            }
+
+            function persist(state) {
+                try { localStorage.setItem('sidebar-open', state ? 'true' : 'false'); } catch (e) { }
+            }
+
+            function showOverlay(show) {
+                if (!overlay) return;
+                if (show) {
+                    overlay.classList.remove('hidden');
+                } else {
+                    overlay.classList.add('hidden');
+                }
+            }
+
+            function openSidebar() {
+                sidebar.classList.remove('-translate-x-full');
+                sidebar.classList.add('translate-x-0');
+                content.classList.add('md:ml-64');
+                showOverlay(!isDesktop());
+                persist(true);
+            }
+
+            function closeSidebar() {
+                sidebar.classList.add('-translate-x-full');
+                sidebar.classList.remove('translate-x-0');
+                content.classList.remove('md:ml-64');
+                showOverlay(false);
+                persist(false);
+            }
+
+            var stored = null;
+            try { stored = localStorage.getItem('sidebar-open'); } catch (e) { }
+            if (stored === 'true') {
+                openSidebar();
+            } else {
+                closeSidebar();
+            }
+
+            toggleBtn.addEventListener('click', function () {
+                if (sidebar.classList.contains('translate-x-0')) {
+                    closeSidebar();
+                } else {
+                    openSidebar();
+                }
+            });
+
+            if (overlay) {
+                overlay.addEventListener('click', function () {
+                    closeSidebar();
+                });
+            }
+
+            window.addEventListener('resize', function () {
+                if (sidebar.classList.contains('translate-x-0')) {
+                    showOverlay(!isDesktop());
+                }
+            });
+        })();
+    </script>
     {% block scripts %}{% endblock %}
 </body>
 

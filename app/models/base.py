@@ -2,25 +2,34 @@
 Mixins base reutilizables para los modelos.
 """
 
-from datetime import datetime, timezone
+from datetime import datetime
 from typing import Optional
 from sqlmodel import Field, SQLModel
 
 
-class TimestampMixin(SQLModel):
+class CreacionMixin(SQLModel):
     """
-    Mixin para añadir campos de auditoría de fecha de creación, actualización y última actividad.
+    Mixin base para añadir solo el campo de fecha de creación.
+    Útil para modelos inmutables como logs de auditoría.
     """
 
     creado_en: datetime = Field(
-        default_factory=lambda: datetime.now(timezone.utc),
+        default_factory=datetime.now,
         nullable=False,
         sa_column_kwargs={
             "server_default": "now()"
         },  # Uso de valor predeterminado del servidor para mayor precisión
     )
+
+
+class TimestampMixin(CreacionMixin):
+    """
+    Mixin para añadir campos de auditoría de fecha de creación, actualización y última actividad.
+    Hereda de CreacionMixin y añade campos de actualización.
+    """
+
     actualizado_en: Optional[datetime] = Field(
-        default_factory=lambda: datetime.now(timezone.utc),
+        default_factory=datetime.now,
         nullable=False,
         sa_column_kwargs={
             "server_default": "now()",
@@ -37,12 +46,11 @@ class TimestampMixin(SQLModel):
 class RedesSocialesMixin(SQLModel):
     """Mixin para campos de redes sociales y enlaces externos"""
 
+    twitter_url: Optional[str] = Field(default=None, max_length=255)
+    facebook_url: Optional[str] = Field(default=None, max_length=255)
+    instagram_url: Optional[str] = Field(default=None, max_length=255)
+    linkedin_url: Optional[str] = Field(default=None, max_length=255)
     sitio_web: Optional[str] = Field(default=None, max_length=255)
-    twitter_handle: Optional[str] = Field(
-        default=None,
-        max_length=50,
-        schema_extra={"pattern": r"^@?[a-zA-Z0-9_]{1,15}$"},
-    )
 
 
 class EstadisticasMixin(SQLModel):
