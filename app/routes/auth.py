@@ -16,6 +16,7 @@ from app.core import (
     verificar_password,
     registrar_actividad,
     templates,
+    crear_access_token,
 )
 from app.models import Usuario, PerfilDemografico, TipoAccion
 
@@ -193,8 +194,8 @@ async def login(
     )
 
     # 4. Crear respuesta con redirección y cookie
-    # Nota: En un sistema real, aquí generaríamos un JWT
-    token = f"fake-jwt-{usuario.username}"
+    # Generar token JWT real
+    token = crear_access_token({"sub": usuario.username})
 
     redirect_url = "/"
     response = RedirectResponse(url=redirect_url, status_code=status.HTTP_303_SEE_OTHER)

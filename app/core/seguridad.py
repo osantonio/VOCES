@@ -1,6 +1,20 @@
 import hashlib
 import base64
 import bcrypt
+import os
+from datetime import datetime, timedelta, timezone
+from typing import Optional
+
+import jwt
+from dotenv import load_dotenv
+
+# Cargar variables de entorno
+load_dotenv()
+
+# Configuración JWT
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = os.getenv("ALGORITHM")
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 
 
 def _pre_hash_password(password: str) -> bytes:
@@ -35,3 +49,57 @@ def verificar_password(password_plano: str, password_hasheado: str) -> bool:
         return bcrypt.checkpw(password_segura, password_hasheado.encode("utf-8"))
     except Exception:
         return False
+
+
+def crear_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
+    """
+    Crea un token JWT firmado.
+
+    Args:
+        data: Diccionario con los datos a incluir en el token (típicamente {"sub": username})
+        expires_delta: Tiempo de expiración personalizado (opcional)
+
+    Returns:
+        Token JWT firmado como string
+    """
+    to_encode = data.copy()
+
+    # Establecer tiempo de expiración
+    if expires_delta:
+        expire = datetime.now(timezone.utc) + expires_delta
+    else:
+        expire = datetime.now(timezone.utc) + timedelta(
+            minutes=ACCESS_TOKEN_EXPIRE_MINUTES
+        )
+
+    # Agregar claims estándar
+    to_encode.update({"exp": expire, "iat": datetime.now(timezone.utc)})
+
+    # Generar token
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+
+def verificar_token(token: str) -> Optional[dict]:
+    """
+    Verifica y decodifica un token JWT.
+
+    Args:
+        token: Token JWT a verificar
+
+    Returns:
+        Payload del token si es válido, None si es inválido o expirado
+    """
+    try:
+        # Decodificar y verificar token
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        return payload
+    except jwt.ExpiredSignatureError:
+        # Token expirado
+        return None
+    except jwt.InvalidTokenError:
+        # Token inválido (firma incorrecta, formato incorrecto, etc.)
+        return None
+    except Exception:
+        # Cualquier otro error
+        return None

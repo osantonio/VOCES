@@ -1,307 +1,163 @@
 {% extends "layout/base.html" %}
 
-{% block title %}{{ usuario.nombres }} {{ usuario.apellidos }} - VOCES{% endblock %}
+{% block title %}{{ usuario.nombres.split()[0] }} {{ usuario.apellidos.split()[0] }} (@{{ usuario.username }}) - VOCES{%
+endblock %}
 
 {% block content %}
 <div class="min-h-screen bg-background">
-      
-    <div class="max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-5 sm:py-10">
-        <div class="flex flex-col w-full">
-            <!-- Botón Volver -->
-            <div class="mb-6">
-                <a href="/usuarios"
-                    class="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors">
-                    <span class="material-symbols-outlined text-base mr-1">arrow_back</span>
-                    Volver al listado
-                </a>
-            </div>
+    <div class="max-w-2xl mx-auto w-full px-4 sm:px-6 py-5 sm:py-8">
 
-            <!-- Card Principal del Perfil -->
-            <div class="flex flex-col gap-8 rounded-xl bg-card border border-border shadow-sm p-4 sm:p-6 md:p-8">
-
-                <div class="grid grid-cols-1 sm:grid-cols-[150px_1fr] gap-6 items-start">
-                    <div class="relative flex items-center justify-center">
-                        <div class="group relative w-[150px] h-[150px] rounded-full overflow-hidden border border-border shadow-sm">
+        <!-- Header del Perfil -->
+        <div class="flex flex-col gap-4 pb-4 border-b border-border">
+            <!-- Avatar, Nombre y Botón de Acción -->
+            <div class="flex items-start justify-between gap-4">
+                <!-- Avatar y Nombre -->
+                <div class="flex gap-3 sm:gap-4 items-start flex-1 min-w-0">
+                    <!-- Avatar con Estado -->
+                    <div class="relative shrink-0">
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-border">
                             {% if usuario.avatar_url %}
                             <img src="{{ usuario.avatar_url }}" alt="Avatar de {{ usuario.username }}"
-                                class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105">
+                                class="w-full h-full object-cover">
                             {% else %}
                             <div class="w-full h-full bg-accent flex items-center justify-center">
-                                <span class="text-xl font-bold text-accent-foreground">{{ user_initials(usuario) }}</span>
+                                <span class="text-xl sm:text-2xl font-bold text-accent-foreground">{{
+                                    user_initials(usuario) }}</span>
                             </div>
                             {% endif %}
-                            <a href="/usuarios/{{ usuario.username }}/editar#avatar"
-                                class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity text-primary-foreground text-sm font-medium"
-                                aria-label="Actualizar foto">
-                                <span class="material-symbols-outlined mr-1">upload</span>
-                                Actualizar
-                            </a>
                         </div>
                         {% set online = usuario.en_linea if usuario.en_linea is defined else False %}
-                        <span class="absolute bottom-2 right-2 w-4 h-4 rounded-full border-2 border-card {{ 'bg-green-500' if online else 'bg-gray-400' }}" aria-label="{{ 'En línea' if online else 'Desconectado' }}"></span>
+                        <span
+                            class="absolute bottom-0 right-0 w-4 h-4 rounded-full border-2 border-background {{ 'bg-green-500' if online else 'bg-gray-400' }}"
+                            aria-label="{{ 'En línea' if online else 'Desconectado' }}"></span>
                     </div>
 
-                    <div class="flex flex-col gap-3">
-                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                            <div class="flex items-center gap-2">
-                                <h1 class="text-foreground text-2xl sm:text-3xl font-bold leading-tight tracking-tight">{{ usuario.nombres }} {{ usuario.apellidos }}</h1>
-                                {% if usuario.verificado is defined and usuario.verificado %}
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-200 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300">
-                                    <span class="material-symbols-outlined text-sm mr-1">verified</span> Verificado
-                                </span>
-                                {% endif %}
-                            </div>
-                            <div class="flex gap-2 flex-wrap justify-center sm:justify-end">
-                                {% if usuario.rol.value == 'Admin' %}
-                                <span class="text-xs font-semibold inline-block py-1 px-2.5 uppercase rounded-full text-purple-600 bg-purple-200 dark:text-purple-300 dark:bg-purple-900/50">Admin</span>
-                                {% elif usuario.rol.value == 'Moderador' %}
-                                <span class="text-xs font-semibold inline-block py-1 px-2.5 uppercase rounded-full text-blue-600 bg-blue-200 dark:text-blue-300 dark:bg-blue-900/50">Moderador</span>
-                                {% elif usuario.rol.value == 'Editor' %}
-                                <span class="text-xs font-semibold inline-block py-1 px-2.5 uppercase rounded-full text-green-600 bg-green-200 dark:text-green-300 dark:bg-green-900/50">Editor</span>
-                                {% else %}
-                                <span class="text-xs font-semibold inline-block py-1 px-2.5 uppercase rounded-full text-gray-600 bg-gray-200 dark:text-gray-300 dark:bg-gray-800">Usuario</span>
-                                {% endif %}
-                                {% if usuario.estado_cuenta.value == 'Activo' %}
-                                <span class="text-xs font-semibold inline-block py-1 px-2.5 uppercase rounded-full text-green-600 bg-green-200 dark:text-green-300 dark:bg-green-900/50">Activo</span>
-                                {% elif usuario.estado_cuenta.value == 'PendienteVerificacion' %}
-                                <span class="text-xs font-semibold inline-block py-1 px-2.5 uppercase rounded-full text-yellow-600 bg-yellow-200 dark:text-yellow-300 dark:bg-yellow-900/50">Pendiente</span>
-                                {% endif %}
-                                {% if usuario.credenciales is defined and usuario.credenciales %}
-                                {% for c in usuario.credenciales %}
-                                <span class="text-xs font-semibold inline-block py-1 px-2.5 rounded-full bg-secondary text-secondary-foreground">{{ c }}</span>
-                                {% endfor %}
-                                {% endif %}
-                            </div>
-                        </div>
-
-                        <p class="text-muted-foreground text-base">@{{ usuario.username }}</p>
-                        {% if usuario.biografia %}
-                        <p class="text-foreground/80 text-base max-w-2xl xl:max-w-3xl">{{ usuario.biografia }}</p>
-                        {% endif %}
-
-                        <div class="flex flex-wrap gap-3">
-                            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-secondary text-secondary-foreground">
-                                <span class="material-symbols-outlined text-base text-muted-foreground">description</span>
-                                <span class="text-sm font-medium">{{ usuario.total_publicaciones or 0 }} publicaciones</span>
-                            </div>
-                            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-secondary text-secondary-foreground">
-                                <span class="material-symbols-outlined text-base text-muted-foreground">forum</span>
-                                <span class="text-sm font-medium">{{ usuario.total_comentarios or 0 }} comentarios</span>
-                            </div>
-                            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-secondary text-secondary-foreground">
-                                <span class="material-symbols-outlined text-base text-muted-foreground">group</span>
-                                <span class="text-sm font-medium">{{ usuario.total_seguidores or 0 }} seguidores</span>
-                            </div>
-                        </div>
-
-                        <div class="flex w-full sm:w-auto shrink-0 justify-center sm:justify-start gap-3 pt-1">
-                            <a href="/usuarios/{{ usuario.username }}/editar" class="inline-flex items-center gap-2 rounded-md text-sm font-semibold ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4">
-                                <span class="material-symbols-outlined text-base">edit</span>
-                                Editar
-                            </a>
-                            <form action="/usuarios/{{ usuario.username }}/eliminar" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este usuario? Esta acción no se puede deshacer.');" class="flex-1 sm:flex-auto max-w-[480px]">
-                                <button type="submit" class="inline-flex items-center gap-2 justify-center rounded-md text-sm font-semibold ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-destructive text-destructive-foreground hover:bg-destructive/90 h-10 px-4 w-full sm:w-auto">
-                                    <span class="material-symbols-outlined text-base">delete</span>
-                                    Eliminar
-                                </button>
-                            </form>
-                        </div>
+                    <!-- Información del Usuario -->
+                    <div class="flex flex-col gap-1 flex-1 min-w-0">
+                        <h1 class="text-foreground text-lg sm:text-xl font-bold leading-tight">
+                            {{ usuario.nombres.split()[0] }} {{ usuario.apellidos.split()[0] }}
+                        </h1>
+                        <p class="text-muted-foreground text-sm">@{{ usuario.username }}</p>
+                        <p class="text-muted-foreground text-sm">
+                            Se unió el {{ usuario.creado_en.strftime('%B de %Y') if usuario.creado_en else 'N/A' }}
+                        </p>
                     </div>
                 </div>
+
+                <!-- Botón de Acción -->
+                <div class="shrink-0">
+                    {% set usuario_actual = request.state.usuario_actual %}
+
+                    {% if usuario_actual and usuario_actual.username == usuario.username %}
+                    {# Es el perfil del usuario actual - Mostrar botón "Editar perfil" #}
+                    <a href="/usuarios/{{ usuario.username }}/editar"
+                        class="inline-flex items-center justify-center gap-2 rounded-full text-sm font-semibold ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-border bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4">
+                        Editar perfil
+                    </a>
+                    {% else %}
+                    {# No es el perfil del usuario actual - Mostrar botón "Seguir" #}
+                    {# TODO: Implementar lógica de seguir/dejar de seguir cuando exista el modelo #}
+                    <button
+                        class="inline-flex items-center justify-center gap-2 rounded-full text-sm font-semibold ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4">
+                        Seguir
+                    </button>
+                    {% endif %}
+                </div>
             </div>
+
+            <!-- Estadísticas -->
+            <div class="flex flex-wrap gap-4 sm:gap-6 text-sm">
+                <div class="flex gap-1">
+                    <span class="font-bold text-foreground">{{ usuario.total_publicaciones or 0 }}</span>
+                    <span class="text-muted-foreground">Posts</span>
+                </div>
+                <div class="flex gap-1">
+                    <span class="font-bold text-foreground">0</span>
+                    <span class="text-muted-foreground">Seguidores</span>
+                </div>
+                <div class="flex gap-1">
+                    <span class="font-bold text-foreground">0</span>
+                    <span class="text-muted-foreground">Seguidos</span>
+                </div>
+                <div class="flex gap-1">
+                    <span class="font-bold text-foreground">{{ usuario.total_comentarios or 0 }}</span>
+                    <span class="text-muted-foreground">Comentarios</span>
+                </div>
+            </div>
+
+            <!-- Redes Sociales -->
+            {% if usuario.twitter_url or usuario.facebook_url or usuario.instagram_url or usuario.linkedin_url or
+            usuario.sitio_web %}
+            <div class="flex flex-wrap gap-3">
+                {% if usuario.sitio_web %}
+                <a href="{{ usuario.sitio_web }}" target="_blank"
+                    class="inline-flex items-center gap-1.5 text-sm text-primary hover:underline">
+                    <span class="material-symbols-outlined text-base">link</span>
+                    {{ usuario.sitio_web.replace('https://', '').replace('http://', '').split('/')[0] }}
+                </a>
+                {% endif %}
+                {% if usuario.twitter_url %}
+                <a href="{{ usuario.twitter_url }}" target="_blank"
+                    class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                    <span class="material-symbols-outlined text-base">link</span>
+                    Twitter
+                </a>
+                {% endif %}
+                {% if usuario.facebook_url %}
+                <a href="{{ usuario.facebook_url }}" target="_blank"
+                    class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                    <span class="material-symbols-outlined text-base">link</span>
+                    Facebook
+                </a>
+                {% endif %}
+                {% if usuario.instagram_url %}
+                <a href="{{ usuario.instagram_url }}" target="_blank"
+                    class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                    <span class="material-symbols-outlined text-base">link</span>
+                    Instagram
+                </a>
+                {% endif %}
+                {% if usuario.linkedin_url %}
+                <a href="{{ usuario.linkedin_url }}" target="_blank"
+                    class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                    <span class="material-symbols-outlined text-base">link</span>
+                    LinkedIn
+                </a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
 
         <!-- Tabs de Navegación -->
-        <div class="pb-3">
-            <div class="flex border-b border-border gap-2 sm:gap-8">
-                <a class="flex flex-col items-center justify-center border-b-[3px] border-b-primary text-foreground pb-[13px] pt-4 px-2 sm:px-4"
+        <div class="border-b border-border">
+            <div class="flex">
+                <a class="flex-1 flex items-center justify-center border-b-2 border-b-primary text-foreground py-4 px-4 hover:bg-accent/50 transition-colors"
                     href="#">
-                    <p class="text-sm font-bold leading-normal tracking-[0.015em]">Información</p>
+                    <p class="text-sm font-semibold">Posts</p>
                 </a>
-                <a class="flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-muted-foreground pb-[13px] pt-4 px-2 sm:px-4 hover:border-b-border hover:text-foreground transition-colors"
+                <a class="flex-1 flex items-center justify-center border-b-2 border-b-transparent text-muted-foreground py-4 px-4 hover:bg-accent/50 transition-colors"
                     href="#">
-                    <p class="text-sm font-bold leading-normal tracking-[0.015em]">Actividad</p>
+                    <p class="text-sm font-semibold">Comentarios</p>
                 </a>
-                <a class="flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-muted-foreground pb-[13px] pt-4 px-2 sm:px-4 hover:border-b-border hover:text-foreground transition-colors"
+                <a class="flex-1 flex items-center justify-center border-b-2 border-b-transparent text-muted-foreground py-4 px-4 hover:bg-accent/50 transition-colors"
                     href="#">
-                    <p class="text-sm font-bold leading-normal tracking-[0.015em]">Estadísticas</p>
+                    <p class="text-sm font-semibold">Likes</p>
+                </a>
+                <a class="flex-1 flex items-center justify-center border-b-2 border-b-transparent text-muted-foreground py-4 px-4 hover:bg-accent/50 transition-colors"
+                    href="#">
+                    <p class="text-sm font-semibold">Guardados</p>
                 </a>
             </div>
         </div>
 
-        <!-- Grid de Contenido -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-6 xl:gap-8">
-            <!-- Columna Principal (2/3) -->
-            <div class="lg:col-span-2 xl:col-span-3 flex flex-col gap-6">
-                <!-- Información Personal -->
-                <div class="flex flex-col gap-4 rounded-lg bg-card/50 border border-border/50 p-5">
-                    <h2 class="text-foreground text-xl font-bold leading-tight tracking-tight flex items-center gap-2">
-                        <span class="material-symbols-outlined text-primary">person</span>
-                        Información Personal
-                    </h2>
-                    <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-foreground/80">
-                        <div>
-                            <dt class="text-sm font-medium text-muted-foreground mb-1">Email</dt>
-                            <dd class="text-sm">{{ usuario.email }}</dd>
-                        </div>
-                        <div>
-                            <dt class="text-sm font-medium text-muted-foreground mb-1">ID de Usuario</dt>
-                            <dd class="text-sm font-mono">{{ usuario.id }}</dd>
-                        </div>
-                        <div>
-                            <dt class="text-sm font-medium text-muted-foreground mb-1">Fecha de Registro</dt>
-                            <dd class="text-sm">
-                                {{ usuario.creado_en.strftime('%d de %B de %Y') if usuario.creado_en else 'N/A'
-                                }}
-                            </dd>
-                        </div>
-                        {% if usuario.actualizado_en %}
-                        <div>
-                            <dt class="text-sm font-medium text-muted-foreground mb-1">Última Actualización</dt>
-                            <dd class="text-sm">
-                                {{ usuario.actualizado_en.strftime('%d de %B de %Y') }}
-                            </dd>
-                        </div>
-                        {% endif %}
-                    </dl>
-                </div>
-
-                <!-- Datos Demográficos -->
-                {% if usuario.perfil_demografico %}
-                <div class="flex flex-col gap-4 rounded-lg bg-card/50 border border-border/50 p-5">
-                    <h2 class="text-foreground text-xl font-bold leading-tight tracking-tight flex items-center gap-2">
-                        <span class="material-symbols-outlined text-primary">location_on</span>
-                        Datos Demográficos
-                    </h2>
-                    <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-foreground/80">
-                        {% if usuario.perfil_demografico.ciudad or usuario.perfil_demografico.departamento %}
-                        <div>
-                            <dt class="text-sm font-medium text-muted-foreground mb-1">Ubicación</dt>
-                            <dd class="text-sm">
-                                {% if usuario.perfil_demografico.ciudad %}{{ usuario.perfil_demografico.ciudad
-                                }}{% endif %}
-                                {% if usuario.perfil_demografico.ciudad and
-                                usuario.perfil_demografico.departamento %}, {% endif %}
-                                {% if usuario.perfil_demografico.departamento %}{{
-                                usuario.perfil_demografico.departamento }}{% endif %}
-                            </dd>
-                        </div>
-                        {% endif %}
-                        {% if usuario.perfil_demografico.telefono %}
-                        <div>
-                            <dt class="text-sm font-medium text-muted-foreground mb-1">Teléfono</dt>
-                            <dd class="text-sm">{{ usuario.perfil_demografico.telefono }}</dd>
-                        </div>
-                        {% endif %}
-                        {% if usuario.perfil_demografico.sexo %}
-                        <div>
-                            <dt class="text-sm font-medium text-muted-foreground mb-1">Sexo</dt>
-                            <dd class="text-sm">
-                                {% if usuario.perfil_demografico.sexo.value == 'M' %}Masculino
-                                {% elif usuario.perfil_demografico.sexo.value == 'F' %}Femenino
-                                {% elif usuario.perfil_demografico.sexo.value == 'O' %}Otro
-                                {% else %}Prefiere no decir{% endif %}
-                            </dd>
-                        </div>
-                        {% endif %}
-                        {% if usuario.perfil_demografico.fecha_nacimiento %}
-                        <div>
-                            <dt class="text-sm font-medium text-muted-foreground mb-1">Fecha de Nacimiento</dt>
-                            <dd class="text-sm">
-                                {{ usuario.perfil_demografico.fecha_nacimiento.strftime('%d de %B de %Y') }}
-                            </dd>
-                        </div>
-                        {% endif %}
-                        {% if usuario.perfil_demografico.nivel_educativo %}
-                        <div>
-                            <dt class="text-sm font-medium text-muted-foreground mb-1">Nivel Educativo</dt>
-                            <dd class="text-sm">{{ usuario.perfil_demografico.nivel_educativo }}</dd>
-                        </div>
-                        {% endif %}
-                        {% if usuario.perfil_demografico.ocupacion %}
-                        <div>
-                            <dt class="text-sm font-medium text-muted-foreground mb-1">Ocupación</dt>
-                            <dd class="text-sm">{{ usuario.perfil_demografico.ocupacion }}</dd>
-                        </div>
-                        {% endif %}
-                    </dl>
-                </div>
-                {% endif %}
-            </div>
-
-            <!-- Columna Lateral (1/3) -->
-            <div class="flex flex-col gap-6">
-                <!-- Estadísticas -->
-                <div class="flex flex-col gap-4 rounded-lg bg-card/50 border border-border/50 p-5">
-                    <h3 class="text-foreground text-lg font-bold leading-tight tracking-tight flex items-center gap-2">
-                        <span class="material-symbols-outlined text-primary">analytics</span>
-                        Estadísticas
-                    </h3>
-                    <dl class="flex flex-col gap-3">
-                        <div class="flex items-center justify-between">
-                            <dt class="text-sm font-medium text-muted-foreground">Publicaciones</dt>
-                            <dd class="text-2xl font-bold text-foreground">{{ usuario.total_publicaciones or 0
-                                }}</dd>
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <dt class="text-sm font-medium text-muted-foreground">Comentarios</dt>
-                            <dd class="text-2xl font-bold text-foreground">{{ usuario.total_comentarios or 0 }}
-                            </dd>
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <dt class="text-sm font-medium text-muted-foreground">Reviews</dt>
-                            <dd class="text-2xl font-bold text-foreground">{{ usuario.total_reviews or 0 }}</dd>
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <dt class="text-sm font-medium text-muted-foreground">Seguidores</dt>
-                            <dd class="text-2xl font-bold text-foreground">{{ usuario.total_seguidores or 0 }}
-                            </dd>
-                        </div>
-                    </dl>
-                </div>
-
-                <!-- Redes Sociales -->
-                {% if usuario.twitter_url or usuario.facebook_url or usuario.instagram_url or
-                usuario.linkedin_url %}
-                <div class="flex flex-col gap-4 rounded-lg bg-card/50 border border-border/50 p-5">
-                    <h3 class="text-foreground text-lg font-bold leading-tight tracking-tight flex items-center gap-2">
-                        <span class="material-symbols-outlined text-primary">share</span>
-                        Redes Sociales
-                    </h3>
-                    <ul class="flex flex-col gap-3">
-                        {% if usuario.twitter_url %}
-                        <li class="flex items-center gap-3">
-                            <span class="material-symbols-outlined text-xl text-muted-foreground">link</span>
-                            <a class="text-primary hover:underline text-sm" href="{{ usuario.twitter_url }}"
-                                target="_blank">Twitter</a>
-                        </li>
-                        {% endif %}
-                        {% if usuario.facebook_url %}
-                        <li class="flex items-center gap-3">
-                            <span class="material-symbols-outlined text-xl text-muted-foreground">link</span>
-                            <a class="text-primary hover:underline text-sm" href="{{ usuario.facebook_url }}"
-                                target="_blank">Facebook</a>
-                        </li>
-                        {% endif %}
-                        {% if usuario.instagram_url %}
-                        <li class="flex items-center gap-3">
-                            <span class="material-symbols-outlined text-xl text-muted-foreground">link</span>
-                            <a class="text-primary hover:underline text-sm" href="{{ usuario.instagram_url }}"
-                                target="_blank">Instagram</a>
-                        </li>
-                        {% endif %}
-                        {% if usuario.linkedin_url %}
-                        <li class="flex items-center gap-3">
-                            <span class="material-symbols-outlined text-xl text-muted-foreground">link</span>
-                            <a class="text-primary hover:underline text-sm" href="{{ usuario.linkedin_url }}"
-                                target="_blank">LinkedIn</a>
-                        </li>
-                        {% endif %}
-                    </ul>
-                </div>
-                {% endif %}
+        <!-- Contenido de los Tabs -->
+        <div class="py-8">
+            <div class="text-center text-muted-foreground">
+                <p class="text-sm">El contenido de los tabs se mostrará aquí cuando se implementen los modelos
+                    correspondientes.</p>
             </div>
         </div>
+
     </div>
-    </div>
-    </div>
+</div>
 {% endblock %}

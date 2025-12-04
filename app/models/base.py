@@ -44,7 +44,15 @@ class TimestampMixin(CreacionMixin):
 
 
 class RedesSocialesMixin(SQLModel):
-    """Mixin para campos de redes sociales y enlaces externos"""
+    """
+    DEPRECADO: Este mixin será removido en la próxima versión.
+
+    Usar en su lugar los modelos TipoRedSocial y UsuarioRedSocial
+    del archivo app/models/redes_sociales.py para gestionar redes sociales
+    de forma dinámica.
+
+    Mixin para campos de redes sociales y enlaces externos (LEGACY)
+    """
 
     twitter_url: Optional[str] = Field(default=None, max_length=255)
     facebook_url: Optional[str] = Field(default=None, max_length=255)

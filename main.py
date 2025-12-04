@@ -7,6 +7,7 @@ from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 
 from app.core.database import init_db, async_session_maker
+from app.core.seguridad import verificar_token
 from sqlmodel import select
 from app.models import Usuario
 from app.routes import auth, main as main_routes, usuarios, logs
@@ -46,18 +47,29 @@ app.include_router(logs.router)
 async def inject_current_user(request: Request, call_next):
     """
     Middleware que inyecta `request.state.usuario_actual` para uso en plantillas.
-    Deriva el username desde la cookie `access_token` y consulta la base de datos.
+    Valida el JWT desde la cookie `access_token` y consulta la base de datos.
     """
     user = None
     token = request.cookies.get("access_token")
-    if token and token.startswith("Bearer fake-jwt-"):
-        username = token.replace("Bearer fake-jwt-", "")
-        try:
-            async with async_session_maker() as session:
-                result = await session.execute(select(Usuario).where(Usuario.username == username))
-                user = result.scalars().first()
-        except Exception:
-            user = None
+
+    if token and token.startswith("Bearer "):
+        # Extraer el token JWT (remover "Bearer ")
+        jwt_token = token.replace("Bearer ", "")
+
+        # Verificar y decodificar el token
+        payload = verificar_token(jwt_token)
+
+        if payload and "sub" in payload:
+            username = payload["sub"]
+            try:
+                async with async_session_maker() as session:
+                    result = await session.execute(
+                        select(Usuario).where(Usuario.username == username)
+                    )
+                    user = result.scalars().first()
+            except Exception:
+                user = None
+
     request.state.usuario_actual = user
     response = await call_next(request)
     return response

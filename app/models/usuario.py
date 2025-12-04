@@ -8,11 +8,12 @@ from typing import Optional, TYPE_CHECKING
 from sqlmodel import Field, Relationship
 from pydantic import EmailStr
 
-from app.models.base import TimestampMixin, RedesSocialesMixin, EstadisticasMixin
+from app.models.base import TimestampMixin, EstadisticasMixin
 from app.models.enums import RolUsuario, EstadoCuenta
 
 if TYPE_CHECKING:
     from app.models.perfil_demografico import PerfilDemografico
+    from app.models.redes_sociales import UsuarioRedSocial
 
 
 def generar_uuid_personalizado() -> str:
@@ -25,10 +26,10 @@ def generar_uuid_personalizado() -> str:
     return f"{letras}{numeros}"
 
 
-class Usuario(TimestampMixin, RedesSocialesMixin, EstadisticasMixin, table=True):
+class Usuario(TimestampMixin, EstadisticasMixin, table=True):
     """
     Modelo de Usuario para autenticación y perfil público.
-    Hereda de TimestampMixin, RedesSocialesMixin y EstadisticasMixin.
+    Hereda de TimestampMixin y EstadisticasMixin.
     """
 
     # Clave primaria: UUID personalizado (LLLNNN)
@@ -97,4 +98,10 @@ class Usuario(TimestampMixin, RedesSocialesMixin, EstadisticasMixin, table=True)
     perfil_demografico: Optional["PerfilDemografico"] = Relationship(
         back_populates="usuario",
         sa_relationship_kwargs={"uselist": False},
+    )
+
+    # Relación con redes sociales (1:N)
+    redes_sociales: list["UsuarioRedSocial"] = Relationship(
+        back_populates="usuario",
+        sa_relationship_kwargs={"cascade": "all, delete-orphan"},
     )

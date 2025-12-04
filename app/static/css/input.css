@@ -91,9 +91,9 @@ body {
 
 /* Material Symbols Utility */
 .material-symbols-outlined {
+    font-family: 'Material Symbols Outlined';
     font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
     font-size: 24px;
-    /* Asegurar que el icono herede el color o se ajuste */
     display: inline-block;
     vertical-align: middle;
 }

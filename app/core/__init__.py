@@ -9,7 +9,12 @@ Este módulo centraliza las importaciones de:
 """
 
 from app.core.database import get_session, init_db
-from app.core.seguridad import hashear_password, verificar_password
+from app.core.seguridad import (
+    hashear_password,
+    verificar_password,
+    crear_access_token,
+    verificar_token,
+)
 from app.core.auditoria import registrar_actividad
 from app.core.templates import templates
 
@@ -20,6 +25,8 @@ __all__ = [
     # Seguridad
     "hashear_password",
     "verificar_password",
+    "crear_access_token",
+    "verificar_token",
     # Auditoría
     "registrar_actividad",
     # Templates

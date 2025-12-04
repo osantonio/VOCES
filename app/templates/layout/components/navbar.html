@@ -3,10 +3,12 @@
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex items-center gap-2">
+                {% if usuario_actual %}
                 <button id="sidebar-toggle" type="button" aria-label="Abrir menú"
                     class="inline-flex items-center justify-center rounded-md text-sm p-2 text-muted-foreground hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
                     <span class="material-symbols-outlined" aria-hidden="true">menu</span>
                 </button>
+                {% endif %}
                 <div class="shrink-0 flex items-center">
                     <a href="/" class="text-2xl font-bold text-primary tracking-tight flex items-center gap-2"
                         aria-label="Inicio">
@@ -96,57 +98,4 @@
     </div>
 </nav>
 
-<script>
-    (function () {
-        var btn = document.getElementById('user-menu-button');
-        var menu = document.getElementById('user-dropdown');
-        if (!btn || !menu) return;
-
-        function openMenu() {
-            menu.classList.remove('hidden');
-            btn.setAttribute('aria-expanded', 'true');
-            // Animación suave
-            menu.style.opacity = '1';
-            menu.style.transform = 'scale(1)';
-        }
-
-        function closeMenu() {
-            menu.classList.add('hidden');
-            btn.setAttribute('aria-expanded', 'false');
-            menu.style.opacity = '0';
-            menu.style.transform = 'scale(0.98)';
-        }
-
-        btn.addEventListener('click', function (e) {
-            e.stopPropagation();
-            if (menu.classList.contains('hidden')) {
-                openMenu();
-            } else {
-                closeMenu();
-            }
-        });
-
-        btn.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                openMenu();
-                var firstItem = menu.querySelector('[role="menuitem"]');
-                if (firstItem) firstItem.focus();
-            } else if (e.key === 'Escape') {
-                closeMenu();
-            }
-        });
-
-        document.addEventListener('click', function (e) {
-            if (!menu.contains(e.target) && e.target !== btn) {
-                closeMenu();
-            }
-        });
-
-        document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape') {
-                closeMenu();
-            }
-        });
-    })();
-</script>
+<script src="{{ url_for('static', path='/js/navbar.js') }}?v=1"></script>

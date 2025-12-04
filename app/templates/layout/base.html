@@ -6,9 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}VOCES{% endblock %}</title>
     <link href="{{ url_for('static', path='/css/output.css') }}?v=2" rel="stylesheet">
-    <!-- Material Symbols -->
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
-        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
     <script>
         // On page load or when changing themes, best to add inline in `head` to avoid FOUC
         if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -23,7 +21,9 @@
 <body class="h-full flex flex-col bg-background text-foreground antialiased">
     {% include "layout/components/navbar.html" %}
 
+    {% if request.state.usuario_actual %}
     {% include "layout/components/sidebar.html" %}
+    {% endif %}
 
     <!-- Main Content -->
     <div id="layout-container" class="relative grow">
@@ -42,76 +42,7 @@
     </footer>
 
     <script src="{{ url_for('static', path='/js/dark-mode.js') }}?v=3"></script>
-    <script>
-        (function () {
-            var sidebar = document.getElementById('app-sidebar');
-            var overlay = document.getElementById('sidebar-overlay');
-            var toggleBtn = document.getElementById('sidebar-toggle');
-            var content = document.getElementById('content-wrapper');
-            if (!sidebar || !toggleBtn || !content) return;
-
-            function isDesktop() {
-                return window.matchMedia('(min-width: 768px)').matches;
-            }
-
-            function persist(state) {
-                try { localStorage.setItem('sidebar-open', state ? 'true' : 'false'); } catch (e) { }
-            }
-
-            function showOverlay(show) {
-                if (!overlay) return;
-                if (show) {
-                    overlay.classList.remove('hidden');
-                } else {
-                    overlay.classList.add('hidden');
-                }
-            }
-
-            function openSidebar() {
-                sidebar.classList.remove('-translate-x-full');
-                sidebar.classList.add('translate-x-0');
-                content.classList.add('md:ml-64');
-                showOverlay(!isDesktop());
-                persist(true);
-            }
-
-            function closeSidebar() {
-                sidebar.classList.add('-translate-x-full');
-                sidebar.classList.remove('translate-x-0');
-                content.classList.remove('md:ml-64');
-                showOverlay(false);
-                persist(false);
-            }
-
-            var stored = null;
-            try { stored = localStorage.getItem('sidebar-open'); } catch (e) { }
-            if (stored === 'true') {
-                openSidebar();
-            } else {
-                closeSidebar();
-            }
-
-            toggleBtn.addEventListener('click', function () {
-                if (sidebar.classList.contains('translate-x-0')) {
-                    closeSidebar();
-                } else {
-                    openSidebar();
-                }
-            });
-
-            if (overlay) {
-                overlay.addEventListener('click', function () {
-                    closeSidebar();
-                });
-            }
-
-            window.addEventListener('resize', function () {
-                if (sidebar.classList.contains('translate-x-0')) {
-                    showOverlay(!isDesktop());
-                }
-            });
-        })();
-    </script>
+    <script src="{{ url_for('static', path='/js/sidebar.js') }}?v=1"></script>
     {% block scripts %}{% endblock %}
 </body>
 
