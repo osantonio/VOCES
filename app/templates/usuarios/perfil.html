@@ -86,44 +86,20 @@ endblock %}
             </div>
 
             <!-- Redes Sociales -->
-            {% if usuario.twitter_url or usuario.facebook_url or usuario.instagram_url or usuario.linkedin_url or
-            usuario.sitio_web %}
+            {% if usuario.redes_sociales %}
             <div class="flex flex-wrap gap-3">
-                {% if usuario.sitio_web %}
-                <a href="{{ usuario.sitio_web }}" target="_blank"
-                    class="inline-flex items-center gap-1.5 text-sm text-primary hover:underline">
-                    <span class="material-symbols-outlined text-base">link</span>
-                    {{ usuario.sitio_web.replace('https://', '').replace('http://', '').split('/')[0] }}
-                </a>
-                {% endif %}
-                {% if usuario.twitter_url %}
-                <a href="{{ usuario.twitter_url }}" target="_blank"
+                {% for red in usuario.redes_sociales %}
+                <a href="{{ red.url }}" target="_blank" rel="noopener noreferrer"
                     class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
-                    <span class="material-symbols-outlined text-base">link</span>
-                    Twitter
+                    {% if red.tipo_red_social %}
+                    <i class="{{ red.tipo_red_social.icono_font_awesome }}"></i>
+                    {{ red.tipo_red_social.nombre }}
+                    {% else %}
+                    {{ red.icono_personalizado|safe }}
+                    {{ red.nombre_personalizado }}
+                    {% endif %}
                 </a>
-                {% endif %}
-                {% if usuario.facebook_url %}
-                <a href="{{ usuario.facebook_url }}" target="_blank"
-                    class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
-                    <span class="material-symbols-outlined text-base">link</span>
-                    Facebook
-                </a>
-                {% endif %}
-                {% if usuario.instagram_url %}
-                <a href="{{ usuario.instagram_url }}" target="_blank"
-                    class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
-                    <span class="material-symbols-outlined text-base">link</span>
-                    Instagram
-                </a>
-                {% endif %}
-                {% if usuario.linkedin_url %}
-                <a href="{{ usuario.linkedin_url }}" target="_blank"
-                    class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
-                    <span class="material-symbols-outlined text-base">link</span>
-                    LinkedIn
-                </a>
-                {% endif %}
+                {% endfor %}
             </div>
             {% endif %}
         </div>

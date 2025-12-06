@@ -117,31 +117,21 @@
                     <span class="material-symbols-outlined text-primary mr-2">share</span>
                     Redes Sociales
                 </h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="space-y-2">
-                        <label for="twitter_url" class="text-sm font-medium text-foreground">Twitter URL</label>
-                        <input type="url" id="twitter_url" name="twitter_url" value="{{ usuario.twitter_url or '' }}"
-                            placeholder="https://twitter.com/usuario"
-                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                <div class="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
+                    <div class="flex-1">
+                        <p class="text-sm font-medium text-foreground mb-1">Gestiona tus redes sociales</p>
+                        <p class="text-xs text-muted-foreground">
+                            Agrega redes del catálogo o <strong>crea personalizadas</strong> con tus propios iconos
+                        </p>
+                        <p class="text-xs text-muted-foreground mt-1">
+                            💡 Si no encuentras la red que buscas, puedes agregarla manualmente
+                        </p>
                     </div>
-                    <div class="space-y-2">
-                        <label for="facebook_url" class="text-sm font-medium text-foreground">Facebook URL</label>
-                        <input type="url" id="facebook_url" name="facebook_url" value="{{ usuario.facebook_url or '' }}"
-                            placeholder="https://facebook.com/usuario"
-                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
-                    </div>
-                    <div class="space-y-2">
-                        <label for="instagram_url" class="text-sm font-medium text-foreground">Instagram URL</label>
-                        <input type="url" id="instagram_url" name="instagram_url"
-                            value="{{ usuario.instagram_url or '' }}" placeholder="https://instagram.com/usuario"
-                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
-                    </div>
-                    <div class="space-y-2">
-                        <label for="linkedin_url" class="text-sm font-medium text-foreground">LinkedIn URL</label>
-                        <input type="url" id="linkedin_url" name="linkedin_url" value="{{ usuario.linkedin_url or '' }}"
-                            placeholder="https://linkedin.com/in/usuario"
-                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
-                    </div>
+                    <a href="/redes"
+                        class="inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 ml-4">
+                        <span class="material-symbols-outlined text-base">settings</span>
+                        Gestionar Redes
+                    </a>
                 </div>
             </div>
 

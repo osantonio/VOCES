@@ -1,0 +1,137 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Mis Redes Sociales - VOCES{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-background">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Header -->
+        <div class="mb-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold text-foreground">Mis Redes Sociales</h1>
+                    <p class="mt-2 text-sm text-muted-foreground">
+                        Gestiona tus perfiles en redes sociales
+                    </p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span
+                        class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary/10 text-primary">
+                        <span class="material-symbols-outlined text-base mr-1">share</span>
+                        {{ mis_redes|length }} red{{ 'es' if mis_redes|length != 1 else '' }}
+                    </span>
+                    <a href="/redes/crear"
+                        class="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors">
+                        <span class="material-symbols-outlined text-base">add</span>
+                        Nueva Red
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla de Redes Sociales -->
+        {% if mis_redes %}
+        <div class="bg-card border border-border rounded-lg shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-border">
+                    <thead class="bg-muted/50">
+                        <tr>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                                Red Social
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                                URL
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                                Tipo
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-right text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                                Acciones
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-card divide-y divide-border">
+                        {% for red in mis_redes %}
+                        <tr class="hover:bg-muted/30 transition-colors">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="shrink-0 h-10 w-10">
+                                        <div
+                                            class="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xl">
+                                            {% if red.tipo_red_social %}
+                                            <i class="{{ red.tipo_red_social.icono_font_awesome }}"></i>
+                                            {% else %}
+                                            {{ red.icono_personalizado|safe }}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-foreground">
+                                            {% if red.tipo_red_social %}
+                                            {{ red.tipo_red_social.nombre }}
+                                            {% else %}
+                                            {{ red.nombre_personalizado }}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <a href="{{ red.url }}" target="_blank" rel="noopener noreferrer"
+                                    class="text-sm text-primary hover:underline truncate max-w-xs block">
+                                    {{ red.url }}
+                                </a>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                {% if red.tipo_red_social %}
+                                <span
+                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
+                                    <span class="material-symbols-outlined text-xs mr-1">verified</span>
+                                    Del Catálogo
+                                </span>
+                                {% else %}
+                                <span
+                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300">
+                                    <span class="material-symbols-outlined text-xs mr-1">edit</span>
+                                    Personalizada
+                                </span>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <form method="POST" action="/redes/eliminar/{{ red.id }}"
+                                    onsubmit="return confirm('¿Eliminar esta red social?')" class="inline">
+                                    <button type="submit"
+                                        class="text-destructive hover:text-destructive/80 transition-colors inline-flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-base">delete</span>
+                                        Eliminar
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <!-- Estado vacío -->
+        <div class="bg-card border border-border rounded-lg shadow-sm p-12 text-center">
+            <span class="material-symbols-outlined text-6xl text-muted-foreground mb-4">share_off</span>
+            <h3 class="text-lg font-medium text-foreground mb-2">No has agregado redes sociales</h3>
+            <p class="text-sm text-muted-foreground mb-6">
+                Comienza agregando tus perfiles en redes sociales para que otros puedan encontrarte.
+            </p>
+            <a href="/redes/crear"
+                class="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors">
+                <span class="material-symbols-outlined text-base">add</span>
+                Agregar Primera Red
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

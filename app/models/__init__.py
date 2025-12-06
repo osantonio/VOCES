@@ -19,7 +19,7 @@ from app.models.base import TimestampMixin, RedesSocialesMixin, EstadisticasMixi
 from app.models.usuario import Usuario, generar_uuid_personalizado
 from app.models.perfil_demografico import PerfilDemografico
 from app.models.log_actividad import LogActividad
-from app.models.redes_sociales import TipoRedSocial, UsuarioRedSocial
+from app.models.redes_sociales import CatalogoRedSocial, UsuarioRedSocial
 
 # Importar eventos (esto registra los listeners automáticamente)
 from app.models import eventos  # noqa: F401
@@ -38,7 +38,7 @@ __all__ = [
     "Usuario",
     "PerfilDemografico",
     "LogActividad",
-    "TipoRedSocial",
+    "CatalogoRedSocial",
     "UsuarioRedSocial",
     # Utilidades
     "generar_uuid_personalizado",

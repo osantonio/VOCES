@@ -43,11 +43,14 @@ async def ver_perfil(
     """
     Endpoint que muestra el perfil completo de un usuario.
     """
-    # Consultar usuario con su perfil demográfico
+    # Consultar usuario con su perfil demográfico y redes sociales
     statement = (
         select(Usuario)
         .where(Usuario.username == username)
-        .options(selectinload(Usuario.perfil_demografico))
+        .options(
+            selectinload(Usuario.perfil_demografico),
+            selectinload(Usuario.redes_sociales),
+        )
     )
     result = await session.execute(statement)
     usuario = result.scalars().first()
@@ -110,12 +113,6 @@ async def editar_perfil_submit(
     usuario.apellidos = form.get("apellidos", usuario.apellidos)
     usuario.biografia = form.get("biografia", usuario.biografia)
     usuario.actualizado_en = datetime.now()
-
-    # Redes sociales
-    usuario.twitter_url = form.get("twitter_url") or None
-    usuario.facebook_url = form.get("facebook_url") or None
-    usuario.instagram_url = form.get("instagram_url") or None
-    usuario.linkedin_url = form.get("linkedin_url") or None
 
     # Actualizar o crear Perfil Demográfico
     if not usuario.perfil_demografico:
