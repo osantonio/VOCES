@@ -27,6 +27,12 @@
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="space-y-2">
+                        <label for="username" class="text-sm font-medium text-foreground">Username</label>
+                        <input type="text" id="username" name="username" value="{{ usuario.username }}" required
+                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                        <p id="username-url-preview" style="font-size:0.8em;color:#666;margin-top:5px"></p>
+                    </div>
+                    <div class="space-y-2">
                         <label for="nombres" class="text-sm font-medium text-foreground">Nombres</label>
                         <input type="text" id="nombres" name="nombres" value="{{ usuario.nombres }}" required
                             class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
@@ -111,29 +117,6 @@
                 </div>
             </div>
 
-            <!-- Redes Sociales -->
-            <div class="bg-card border border-border rounded-lg shadow-sm p-6">
-                <h2 class="text-lg font-semibold text-foreground mb-4 flex items-center">
-                    <span class="material-symbols-outlined text-primary mr-2">share</span>
-                    Redes Sociales
-                </h2>
-                <div class="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
-                    <div class="flex-1">
-                        <p class="text-sm font-medium text-foreground mb-1">Gestiona tus redes sociales</p>
-                        <p class="text-xs text-muted-foreground">
-                            Agrega redes del catálogo o <strong>crea personalizadas</strong> con tus propios iconos
-                        </p>
-                        <p class="text-xs text-muted-foreground mt-1">
-                            💡 Si no encuentras la red que buscas, puedes agregarla manualmente
-                        </p>
-                    </div>
-                    <a href="/redes"
-                        class="inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 ml-4">
-                        <span class="material-symbols-outlined text-base">settings</span>
-                        Gestionar Redes
-                    </a>
-                </div>
-            </div>
 
             <!-- Botones de Acción -->
             <div class="flex items-center justify-end gap-4">
@@ -149,4 +132,8 @@
         </form>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', path='/js/username-preview.js') }}?v=1"></script>
 {% endblock %}

@@ -69,10 +69,12 @@ async def registrar_usuario(
     if existing_user:
         await registrar_actividad(
             session=session,
-            tipo_accion=TipoAccion.RegistroExitoso,
+            tipo_accion=TipoAccion.IntentoRegistroFallido,
             descripcion="Intento de registro fallido: usuario o email ya existe",
             exitoso=False,
             detalles={"username": username, "email": email},
+            ip_address=(request.client.host if request.client else None),
+            user_agent=request.headers.get("User-Agent"),
         )
         # Volver a renderizar con error y datos previos
         return templates.TemplateResponse(
@@ -132,6 +134,8 @@ async def registrar_usuario(
             exitoso=False,
             mensaje_error=str(e),
             detalles={"username": username},
+            ip_address=(request.client.host if request.client else None),
+            user_agent=request.headers.get("User-Agent"),
         )
         return templates.TemplateResponse(
             "auth/registro.html",
@@ -178,6 +182,8 @@ async def login(
             descripcion="Credenciales inválidas",
             exitoso=False,
             detalles={"username_intentado": form_data.username},
+            ip_address=(request.client.host if request.client else None),
+            user_agent=request.headers.get("User-Agent"),
         )
         return templates.TemplateResponse(
             "auth/login.html",
@@ -191,6 +197,8 @@ async def login(
         tipo_accion=TipoAccion.Login,
         descripcion="Inicio de sesión exitoso",
         usuario_id=usuario.id,
+        ip_address=(request.client.host if request.client else None),
+        user_agent=request.headers.get("User-Agent"),
     )
 
     # 4. Crear respuesta con redirección y cookie
@@ -213,10 +221,20 @@ async def login(
 
 
 @router.get("/logout")
-async def logout(request: Request):
+async def logout(request: Request, session: AsyncSession = Depends(get_session)):
     """Cierra sesión eliminando la cookie."""
     response = RedirectResponse(
         url="/auth/login", status_code=status.HTTP_303_SEE_OTHER
     )
     response.delete_cookie("access_token")
+    usuario_actual = request.state.usuario_actual
+    if usuario_actual:
+        await registrar_actividad(
+            session=session,
+            tipo_accion=TipoAccion.Logout,
+            descripcion="Cierre de sesión",
+            usuario_id=usuario_actual.id,
+            ip_address=(request.client.host if request.client else None),
+            user_agent=request.headers.get("User-Agent"),
+        )
     return response

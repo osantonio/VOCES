@@ -13,7 +13,6 @@ from app.models.enums import RolUsuario, EstadoCuenta
 
 if TYPE_CHECKING:
     from app.models.perfil_demografico import PerfilDemografico
-    from app.models.redes_sociales import UsuarioRedSocial
 
 
 def generar_uuid_personalizado() -> str:
@@ -100,8 +99,4 @@ class Usuario(TimestampMixin, EstadisticasMixin, table=True):
         sa_relationship_kwargs={"uselist": False},
     )
 
-    # Relación con redes sociales (1:N)
-    redes_sociales: list["UsuarioRedSocial"] = Relationship(
-        back_populates="usuario",
-        sa_relationship_kwargs={"cascade": "all, delete-orphan"},
-    )
+    # Redes sociales eliminadas del modelo

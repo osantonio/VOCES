@@ -10,7 +10,7 @@ from app.core.database import init_db, async_session_maker
 from app.core.seguridad import verificar_token
 from sqlmodel import select
 from app.models import Usuario
-from app.routes import auth, main as main_routes, usuarios, logs, redes_sociales
+from app.routes import auth, main as main_routes, usuarios, logs
 
 
 @asynccontextmanager
@@ -41,7 +41,6 @@ app.include_router(main_routes.router)
 app.include_router(auth.router)
 app.include_router(usuarios.router)
 app.include_router(logs.router)
-app.include_router(redes_sociales.router)
 
 
 @app.middleware("http")

@@ -11,10 +11,10 @@ from sqlalchemy.orm import selectinload
 from sqlmodel import select
 from datetime import datetime
 
-from app.core import templates, get_session
+from app.core import templates, get_session, registrar_actividad
 from app.models import Usuario
 from app.models.perfil_demografico import PerfilDemografico
-from app.models.enums import Sexo
+from app.models.enums import Sexo, TipoAccion
 
 router = APIRouter(prefix="/usuarios", tags=["Usuarios"])
 
@@ -43,13 +43,12 @@ async def ver_perfil(
     """
     Endpoint que muestra el perfil completo de un usuario.
     """
-    # Consultar usuario con su perfil demográfico y redes sociales
+    # Consultar usuario con su perfil demográfico
     statement = (
         select(Usuario)
         .where(Usuario.username == username)
         .options(
             selectinload(Usuario.perfil_demografico),
-            selectinload(Usuario.redes_sociales),
         )
     )
     result = await session.execute(statement)
@@ -150,6 +149,16 @@ async def editar_perfil_submit(
     await session.commit()
     await session.refresh(usuario)
 
+    await registrar_actividad(
+        session=session,
+        tipo_accion=TipoAccion.ActualizacionPerfil,
+        descripcion="Actualización de perfil",
+        usuario_id=usuario.id,
+        detalles={"username": usuario.username},
+        ip_address=(request.client.host if request.client else None),
+        user_agent=request.headers.get("User-Agent"),
+    )
+
     return RedirectResponse(url=f"/usuarios/{usuario.username}", status_code=303)
 
 
@@ -171,6 +180,16 @@ async def eliminar_usuario(
     # Eliminar el usuario (esto también eliminará el perfil demográfico por cascada)
     await session.delete(usuario)
     await session.commit()
+
+    await registrar_actividad(
+        session=session,
+        tipo_accion=TipoAccion.EliminacionUsuario,
+        descripcion="Usuario eliminado",
+        exitoso=True,
+        detalles={"username": username},
+        ip_address=(request.client.host if request.client else None),
+        user_agent=request.headers.get("User-Agent"),
+    )
 
     # Redirigir a la lista de usuarios
     return RedirectResponse(url="/usuarios", status_code=303)

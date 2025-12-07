@@ -41,6 +41,7 @@ class TipoAccion(str, Enum):
     Login = "Login"
     Logout = "Logout"
     RegistroExitoso = "RegistroExitoso"
+    IntentoRegistroFallido = "IntentoRegistroFallido"
     IntentoLoginFallido = "IntentoLoginFallido"
 
     # Perfil
@@ -57,6 +58,7 @@ class TipoAccion(str, Enum):
     EliminacionReview = "EliminacionReview"
     CreacionComentario = "CreacionComentario"
     EliminacionComentario = "EliminacionComentario"
+    EliminacionUsuario = "EliminacionUsuario"
 
     # Interacciones
     Like = "Like"

@@ -85,23 +85,7 @@ endblock %}
                 </div>
             </div>
 
-            <!-- Redes Sociales -->
-            {% if usuario.redes_sociales %}
-            <div class="flex flex-wrap gap-3">
-                {% for red in usuario.redes_sociales %}
-                <a href="{{ red.url }}" target="_blank" rel="noopener noreferrer"
-                    class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
-                    {% if red.tipo_red_social %}
-                    <i class="{{ red.tipo_red_social.icono_font_awesome }}"></i>
-                    {{ red.tipo_red_social.nombre }}
-                    {% else %}
-                    {{ red.icono_personalizado|safe }}
-                    {{ red.nombre_personalizado }}
-                    {% endif %}
-                </a>
-                {% endfor %}
-            </div>
-            {% endif %}
+            
         </div>
 
         <!-- Tabs de Navegación -->
